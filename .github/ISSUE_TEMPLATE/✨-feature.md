@@ -1,7 +1,7 @@
 ---
-name: "✨ feature : "
+name: "✨ feature"
 about: feature 작업 사항을 입력해주세요.
-title: ''
+title: "✨ feature : "
 labels: feature
 assignees: ''
 

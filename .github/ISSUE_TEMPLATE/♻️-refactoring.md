@@ -1,7 +1,7 @@
 ---
-name: "♻️ refactoring : "
+name: "♻️ refactoring"
 about: refactoring 작업 사항을 입력해주세요.
-title: ''
+title: "♻️ refactoring : "
 labels: refactoring
 assignees: ''
 
