@@ -23,7 +23,7 @@ const BinInfoCard = ({
 }) => {
   const [hour, minute, seconds] = secondsToHMS(arrivedSeconds);
   const totalDistance =
-    totalDistanceMeters > 1000
+    totalDistanceMeters >= 1000
       ? `${metersToKilometers(totalDistanceMeters)}km`
       : `${totalDistanceMeters}m`;
 
