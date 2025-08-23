@@ -6,9 +6,10 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
-    "typeRoots" : ["./@types", "./node_modules/@types"],
+    "typeRoots": ["./@types", "./node_modules/@types"],
+    "types": ["kakao.maps.d.ts"],
     "paths": {
       "@/*": ["src/*"]
-    },
+    }
   }
 }
