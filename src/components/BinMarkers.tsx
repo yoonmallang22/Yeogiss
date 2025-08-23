@@ -1,5 +1,5 @@
-import regularMarkerImage from '@/assets/regular-marker.png';
-import selectedMarkerImage from '@/assets/target-marker.png';
+import regularMarkerImage from '@/assets/regular-marker.svg';
+import selectedMarkerImage from '@/assets/target-marker.svg';
 import type { Bin } from '@/lib/api/bin';
 import { useContext, useEffect } from 'react';
 import { KakaoMapContext, MapMarker } from 'react-kakao-maps-sdk';
@@ -7,11 +7,11 @@ import { KakaoMapContext, MapMarker } from 'react-kakao-maps-sdk';
 const IMAGE = {
   regular: {
     src: regularMarkerImage,
-    size: { width: 24, height: 24 },
+    size: { width: 16.5 * 1.5, height: 19.5 * 1.5 },
   },
   selected: {
     src: selectedMarkerImage,
-    size: { width: 32, height: 32 },
+    size: { width: 25 * 1.5, height: 29 * 1.5 },
   },
 };
 
