@@ -30,6 +30,9 @@
 
 @theme {
   --color-primary: #2ecc71;
+  --color-secondary: #A5A5A5;
+  --color-second-green: #00B94E;
+  --color-white: #ffffff;
   --color-blue: #5364d0;
   --color-error: #444444;
   --font-sans: "NotoSansKR", sans-serif;
