@@ -5,6 +5,7 @@ import regularBinIcon from '@/assets/regular-bin-icon.png';
 import type { LatLng } from '@/types/geolocation.type';
 import { secondsToHMS } from '@/utils/time';
 import { metersToKilometers } from '@/utils/geo';
+import Button from '@/components/common/Button';
 
 /**
  * 쓰레기통 마커 클릭시 하단에 정보를 보여주는 컴포넌트
@@ -29,7 +30,9 @@ const BinInfoCard = ({
   return (
     <div className="w-[97%] rounded-2xl shadow-md bg-white p-4 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl">
       {/* 위치명 */}
-      <p className="text-gray-900 font-medium text-base truncate">{bin.detail_address ? bin.detail_address : "쓰레기통(정보 없음)"}</p>
+      <p className="text-gray-900 font-medium text-base truncate">
+        {bin.detail_address ? bin.detail_address : '쓰레기통(정보 없음)'}
+      </p>
 
       {/* 설치 위치 */}
       <div className="flex items-center gap-2 text-gray-700 text-sm">
@@ -57,14 +60,13 @@ const BinInfoCard = ({
         </div>
 
         {/* 버튼 */}
-        <button
-          className="px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-green-600 transition"
+        <Button
           onClick={() => {
             if (directionBtnClick) directionBtnClick({ lat: bin.lat, lng: bin.lng });
           }}
         >
           길 안내
-        </button>
+        </Button>
       </div>
     </div>
   );
