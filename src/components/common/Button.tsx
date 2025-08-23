@@ -17,7 +17,10 @@ const Button = ({
   variant?: 'primary' | 'secondary' | 'disabled';
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
-    <button className={`${CLASS.base} ${CLASS[variant]}`} {...rest}>
+    <button
+      {...rest}
+      className={`${CLASS.base} ${CLASS[variant]}${rest.className ? rest.className : ''}`}
+    >
       {text}
     </button>
   );
