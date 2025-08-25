@@ -9,7 +9,7 @@ import MeButton from "@/pages/home/components/MeButton";
 const Home = () => {
   useKakaoLoader();
 
-  const [isFollowing, setIsFollowing] = useState(true);
+  const [isFollowing, setIsFollowing] = useState(false);
   const position = useCurrentPosition();
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
@@ -48,9 +48,12 @@ const Home = () => {
       </Map>
       <MeButton
         onClick={() => {
-          setIsFollowing(true);
+          if (position) {
+            setIsFollowing(true);
+          }
           moveToPosition();
         }}
+        isFollowing={isFollowing}
       />
     </div>
   );
