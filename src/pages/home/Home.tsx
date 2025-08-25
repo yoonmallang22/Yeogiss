@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
 import useKakaoLoader from "@/hooks/useKakaoLoader";
 import useCurrentPosition from "@/hooks/useCurrentPosition";
 import { DEFAULT_POSITION } from "@/constants/geo";
 import MeButton from "@/pages/home/components/MeButton";
+import MyMarker from "@/pages/home/components/MyMarker";
 
 const Home = () => {
   useKakaoLoader();
@@ -17,13 +18,13 @@ const Home = () => {
   const moveToPosition = useCallback(() => {
     if (!position) {
       toast(
-        "브라우저(혹은 OS)의 위치 서비스가 꺼져 있어요. 위치 서비스를 켜야 이용 가능해요."
+        "브라우저(혹은 OS)의 위치 서비스가 꺼져 있어요. 위치 서비스를 켜야 이용 가능해요.",
       );
       return;
     }
     if (mapRef.current) {
       mapRef.current.setCenter(
-        new kakao.maps.LatLng(position.lat, position.lng)
+        new kakao.maps.LatLng(position.lat, position.lng),
       );
     }
   }, [position]);
@@ -44,7 +45,7 @@ const Home = () => {
         onDragStart={() => setIsFollowing(false)}
         onZoomChanged={() => setIsFollowing(false)}
       >
-        {position && <MapMarker position={position} />}
+        {position && <MyMarker myLocaiton={position} />}
       </Map>
       <MeButton
         onClick={() => {
