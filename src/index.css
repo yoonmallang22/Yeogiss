@@ -30,9 +30,10 @@
 
 @theme {
   --color-primary: #009039;
-  --color-second-green: #00b94e;
+  --color-secondary: #00b94e;
   --color-black: #262626;
   --color-white: #ffffff;
+  --color-disabled: #a5a5a5;
   --color-error: #444444;
   --font-sans: "NotoSansKR", sans-serif;
 }
