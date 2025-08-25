@@ -1,56 +1,55 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
 import useKakaoLoader from "@/hooks/useKakaoLoader";
 import useCurrentPosition from "@/hooks/useCurrentPosition";
-import type { LatLng } from "@/types/geolocation.type";
 import { DEFAULT_POSITION } from "@/constants/geo";
 import MeButton from "@/pages/home/components/MeButton";
 
 const Home = () => {
   useKakaoLoader();
 
-  const [center, setCenter] = useState<LatLng>(DEFAULT_POSITION);
   const [isFollowing, setIsFollowing] = useState(true);
   const position = useCurrentPosition();
+  const mapRef = useRef<kakao.maps.Map | null>(null);
+
+  /* 현재 위치로 지도 중심 이동 */
+  const moveToPosition = useCallback(() => {
+    if (!position) {
+      toast(
+        "브라우저(혹은 OS)의 위치 서비스가 꺼져 있어요. 위치 서비스를 켜야 이용 가능해요."
+      );
+      return;
+    }
+    if (mapRef.current) {
+      mapRef.current.setCenter(
+        new kakao.maps.LatLng(position.lat, position.lng)
+      );
+    }
+  }, [position]);
 
   useEffect(() => {
     if (position && isFollowing) {
-      if (center.lat !== position.lat || center.lng !== position.lng) {
-        setCenter(position);
-      }
+      moveToPosition();
     }
-  }, [position, isFollowing, center]);
+  }, [position, isFollowing, moveToPosition]);
 
   return (
     <div className="w-full h-screen">
       <Map
-        center={center}
+        center={position ?? DEFAULT_POSITION}
         className="w-full h-full"
         level={3}
+        ref={mapRef}
         onDragStart={() => setIsFollowing(false)}
-        onDragEnd={(map) => {
-          const latlng = map.getCenter();
-          setCenter({ lat: latlng.getLat(), lng: latlng.getLng() });
-        }}
-        onZoomChanged={(map) => {
-          setIsFollowing(false);
-          const latlng = map.getCenter();
-          setCenter({ lat: latlng.getLat(), lng: latlng.getLng() });
-        }}
+        onZoomChanged={() => setIsFollowing(false)}
       >
         {position && <MapMarker position={position} />}
       </Map>
       <MeButton
         onClick={() => {
-          if (!position) {
-            toast(
-              "브라우저(혹은 OS)의 위치 서비스가 꺼져 있어요. 위치 서비스를 켜야 이용 가능해요."
-            );
-            return;
-          }
-          setIsFollowing(!isFollowing);
-          setCenter(position);
+          setIsFollowing(true);
+          moveToPosition();
         }}
       />
     </div>
