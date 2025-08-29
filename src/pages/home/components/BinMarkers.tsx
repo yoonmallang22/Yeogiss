@@ -43,7 +43,7 @@ const BinMarkers = ({
     if (moveToSelected && bins.length) {
       const selectedBin = bins.find((bin) => bin.binId === selectedId);
       if (!selectedBin) return;
-      kakaoMap.setCenter(new kakao.maps.LatLng(selectedBin.lat, selectedBin.lng));
+      kakaoMap.panTo(new kakao.maps.LatLng(selectedBin.lat, selectedBin.lng));
     }
   }, [selectedId, bins, kakaoMap, moveToSelected]);
   return (
