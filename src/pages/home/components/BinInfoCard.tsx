@@ -28,34 +28,34 @@ const BinInfoCard = ({
       : `${totalDistanceMeters}m`;
 
   return (
-    <div className="w-[97%] rounded-2xl shadow-md bg-white p-4 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl">
+    <div className="w-[97%] rounded-2xl shadow-md bg-white p-4 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black">
       {/* 위치명 */}
-      <p className="text-gray-900 font-medium text-base truncate">
-        {bin.detail_address ? bin.detail_address : '쓰레기통(정보 없음)'}
+      <p className="font-medium text-base truncate">
+        {bin.detailAddress ? bin.detailAddress : '쓰레기통(정보 없음)'}
       </p>
 
       {/* 설치 위치 */}
-      <div className="flex items-center gap-2 text-gray-700 text-sm">
+      <div className="flex items-center gap-2 text-sm">
         {bin.type === 'regular' ? (
-          <img className="w-4 h-5 text-green-500" src={regularBinIcon} />
+          <img className="w-4 h-5" src={regularBinIcon} />
         ) : (
-          <img className="w-5 h-5 text-green-500" src={recycleBinIcon} />
+          <img className="w-5 h-5" src={recycleBinIcon} />
         )}
-        <span>{bin.road_address}</span>
+        <span>{bin.roadAddress}</span>
       </div>
 
       {/* 시간/거리 + 버튼 */}
       <div className="flex items-center justify-between mt-2">
         {/* 시간 & 거리 */}
         <div className="flex items-center gap-2">
-          <img className="w-8 h-8 text-orange-500" src={walkImage} />
+          <img className="w-8 h-8" src={walkImage} />
           <div>
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold">
               {hour ? `${hour}시간 ` : ''}
               {minute ? `${minute}분 ` : ''}
               {hour <= 0 && seconds ? `${seconds}초` : ''} 후 도착
             </p>
-            <p className="text-xs font-light text-gray-500">총 거리 {totalDistance}</p>
+            <p className="text-xs font-light">총 거리 {totalDistance}</p>
           </div>
         </div>
 

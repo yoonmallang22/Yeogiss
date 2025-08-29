@@ -40,7 +40,7 @@ const BinMarkers = ({
     // kakaoMap이 준비되지 않았거나, selectedId가 null이면 동작하지 않음
     if (!kakaoMap || selectedId === null) return;
 
-    if (moveToSelected) {
+    if (moveToSelected && bins.length) {
       const selectedBin = bins.find((bin) => bin.binId === selectedId);
       if (!selectedBin) return;
       kakaoMap.setCenter(new kakao.maps.LatLng(selectedBin.lat, selectedBin.lng));
@@ -48,7 +48,7 @@ const BinMarkers = ({
   }, [selectedId, bins, kakaoMap, moveToSelected]);
   return (
     <>
-      {bins &&
+      {bins.length &&
         bins.map((bin) => {
           return (
             <MapMarker
