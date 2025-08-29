@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import type { LatLng } from "@/types/geolocation.type";
 
-const useCurrentPosition = (
+const useUserLocation = (
   options?: PositionOptions,
-  throttleMs: number = 1000
+  throttleMs: number = 1000,
 ): LatLng | null => {
   const [position, setPosition] = useState<LatLng | null>(null);
   const lastUpdateTime = useRef<number>(0);
@@ -29,7 +29,7 @@ const useCurrentPosition = (
         maximumAge: throttleMs,
         timeout: 5000,
         ...options,
-      }
+      },
     );
 
     return () => navigator.geolocation.clearWatch(watchId);
@@ -38,4 +38,4 @@ const useCurrentPosition = (
   return position;
 };
 
-export default useCurrentPosition;
+export default useUserLocation;

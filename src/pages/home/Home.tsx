@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Map } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
 import useKakaoLoader from "@/hooks/useKakaoLoader";
-import useCurrentPosition from "@/hooks/useCurrentPosition";
+import useUserLocation from "@/hooks/useUserLocation";
 import { DEFAULT_POSITION } from "@/constants/geo";
 import MeButton from "@/pages/home/components/MeButton";
 import MyMarker from "@/pages/home/components/MyMarker";
@@ -12,7 +12,7 @@ const Home = () => {
 
   const [isFollowing, setIsFollowing] = useState(false);
   const [center, setCenter] = useState(DEFAULT_POSITION);
-  const position = useCurrentPosition();
+  const userLocation = useUserLocation();
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
   /* 초기 위치 권한 확인 */
@@ -33,10 +33,10 @@ const Home = () => {
 
   /* 자동 추적 모드일 때만 position으로 중심 좌표 갱신 */
   useEffect(() => {
-    if (position && isFollowing) {
-      setCenter(position);
+    if (userLocation && isFollowing) {
+      setCenter(userLocation);
     }
-  }, [position, isFollowing]);
+  }, [userLocation, isFollowing]);
 
   /* 현재 위치로 지도 중심 이동 */
   const moveToPosition = useCallback((lat: number, lng: number) => {
@@ -46,7 +46,7 @@ const Home = () => {
   }, []);
 
   const handleMeButtonClick = () => {
-    if (!position) {
+    if (!userLocation) {
       toast(
         "브라우저(혹은 OS)의 위치 서비스가 꺼져 있어요. 위치 서비스를 켜야 이용 가능해요.",
       );
@@ -54,7 +54,7 @@ const Home = () => {
     }
     // 자동 추적 모드 활성화 + 지도 중심 이동
     setIsFollowing(true);
-    moveToPosition(position.lat, position.lng);
+    moveToPosition(userLocation.lat, userLocation.lng);
   };
 
   /* 지도 드래그 or 줌 시 자동 추적 해제 + 중심 좌표 저장 */
@@ -76,7 +76,7 @@ const Home = () => {
         onDragStart={handleDragOrZoom}
         onZoomChanged={handleDragOrZoom}
       >
-        {position && <MyMarker myLocation={position} />}
+        {userLocation && <MyMarker myLocation={userLocation} />}
       </Map>
 
       <MeButton onClick={handleMeButtonClick} isFollowing={isFollowing} />
