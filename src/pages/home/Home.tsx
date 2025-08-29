@@ -76,7 +76,7 @@ const Home = () => {
         onDragStart={handleDragOrZoom}
         onZoomChanged={handleDragOrZoom}
       >
-        {position && <MyMarker myLocaiton={position} />}
+        {position && <MyMarker myLocation={position} />}
       </Map>
 
       <MeButton onClick={handleMeButtonClick} isFollowing={isFollowing} />

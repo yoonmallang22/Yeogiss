@@ -4,13 +4,13 @@ import type { LatLng } from "@/types/geolocation.type";
 import myMarkerImage from "@/assets/my-marker.svg";
 
 type MyMarkerProps = {
-  myLocaiton: LatLng;
+  myLocation: LatLng;
 };
 
-const MyMarkerComponent = ({ myLocaiton }: MyMarkerProps) => {
+const MyMarkerComponent = ({ myLocation }: MyMarkerProps) => {
   return (
     <MapMarker
-      position={myLocaiton}
+      position={myLocation}
       image={{ src: myMarkerImage, size: { width: 26, height: 26 } }}
     />
   );
