@@ -21,13 +21,13 @@ const BinInfoCard = ({
   };
   directionBtnClick?: (latlng: LatLng) => void;
 }) => {
+  if (bin && (!arrivedSeconds || !totalDistanceMeters)) return <Skeleton />;
+
   const [hour, minute, seconds] = secondsToHMS(arrivedSeconds);
   const totalDistance =
     totalDistanceMeters >= 1000
       ? `${metersToKilometers(totalDistanceMeters)}km`
       : `${totalDistanceMeters}m`;
-
-  if (!bin || !arrivedSeconds || !totalDistanceMeters) return <Skeleton />;
 
   return (
     <div className="w-[97%] rounded-2xl shadow-md bg-white p-4 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black">
