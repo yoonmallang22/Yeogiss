@@ -11,51 +11,75 @@ const Home = () => {
   useKakaoLoader();
 
   const [isFollowing, setIsFollowing] = useState(false);
+  const [center, setCenter] = useState(DEFAULT_POSITION);
   const position = useCurrentPosition();
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
+  /* 초기 위치 권한 확인 */
+  useEffect(() => {
+    if (!navigator.permissions) return;
+
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((permissionStatus) => {
+        if (permissionStatus.state === "granted") {
+          setIsFollowing(true);
+        } else {
+          setIsFollowing(false);
+          setCenter(DEFAULT_POSITION);
+        }
+      });
+  }, []);
+
+  /* 자동 추적 모드일 때만 position으로 중심 좌표 갱신 */
+  useEffect(() => {
+    if (position && isFollowing) {
+      setCenter(position);
+    }
+  }, [position, isFollowing]);
+
   /* 현재 위치로 지도 중심 이동 */
-  const moveToPosition = useCallback(() => {
+  const moveToPosition = useCallback((lat: number, lng: number) => {
+    if (mapRef.current) {
+      mapRef.current.setCenter(new kakao.maps.LatLng(lat, lng));
+    }
+  }, []);
+
+  const handleMeButtonClick = () => {
     if (!position) {
       toast(
         "브라우저(혹은 OS)의 위치 서비스가 꺼져 있어요. 위치 서비스를 켜야 이용 가능해요.",
       );
       return;
     }
-    if (mapRef.current) {
-      mapRef.current.setCenter(
-        new kakao.maps.LatLng(position.lat, position.lng),
-      );
-    }
-  }, [position]);
+    // 자동 추적 모드 활성화 + 지도 중심 이동
+    setIsFollowing(true);
+    moveToPosition(position.lat, position.lng);
+  };
 
-  useEffect(() => {
-    if (position && isFollowing) {
-      moveToPosition();
+  /* 지도 드래그 or 줌 시 자동 추적 해제 + 중심 좌표 저장 */
+  const handleDragOrZoom = () => {
+    if (mapRef.current) {
+      const center = mapRef.current.getCenter();
+      setCenter({ lat: center.getLat(), lng: center.getLng() });
     }
-  }, [position, isFollowing, moveToPosition]);
+    setIsFollowing(false);
+  };
 
   return (
     <div className="w-full h-screen">
       <Map
-        center={position ?? DEFAULT_POSITION}
+        center={center}
         className="w-full h-full"
         level={3}
         ref={mapRef}
-        onDragStart={() => setIsFollowing(false)}
-        onZoomChanged={() => setIsFollowing(false)}
+        onDragStart={handleDragOrZoom}
+        onZoomChanged={handleDragOrZoom}
       >
         {position && <MyMarker myLocaiton={position} />}
       </Map>
-      <MeButton
-        onClick={() => {
-          if (position) {
-            setIsFollowing(true);
-          }
-          moveToPosition();
-        }}
-        isFollowing={isFollowing}
-      />
+
+      <MeButton onClick={handleMeButtonClick} isFollowing={isFollowing} />
     </div>
   );
 };
