@@ -3,7 +3,7 @@ import useApiError from '@/hooks/useApiError';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Router from "@/routes/Router";
 
 function App() {
   const { handleError } = useApiError();
@@ -22,7 +22,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary FallbackComponent={FallbackComponent}>
-        <ToastContainer position="bottom-center" limit={1} autoClose={4000} hideProgressBar />
+        <Router />
       </ErrorBoundary>
     </QueryClientProvider>
   );
