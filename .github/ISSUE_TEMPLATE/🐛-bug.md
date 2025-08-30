@@ -3,8 +3,7 @@ name: "\U0001F41B bug"
 about: bug 발생 시 작성해주세요.
 title: "\U0001F41B bug : "
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
 ## Problem

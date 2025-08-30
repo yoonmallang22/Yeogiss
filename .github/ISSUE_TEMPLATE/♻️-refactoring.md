@@ -3,8 +3,7 @@ name: "♻️ refactoring"
 about: refactoring 작업 사항을 입력해주세요.
 title: "♻️ refactoring : "
 labels: refactoring
-assignees: ''
-
+assignees: ""
 ---
 
 ## Description 📝

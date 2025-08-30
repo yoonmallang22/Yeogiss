@@ -1,7 +1,7 @@
 import type { LatLng } from "@/types/geolocation.type";
 
 export const getCurrentPosition = (
-  options?: PositionOptions
+  options?: PositionOptions,
 ): Promise<LatLng> => {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
@@ -15,7 +15,7 @@ export const getCurrentPosition = (
         });
       },
       (err) => reject(err),
-      options
+      options,
     );
   });
 };

@@ -1,8 +1,11 @@
-import FallbackComponent from '@/components/FallbackComponent';
-import useApiError from '@/hooks/useApiError';
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ErrorBoundary } from 'react-error-boundary';
-import { ToastContainer } from 'react-toastify';
+import FallbackComponent from "@/components/FallbackComponent";
+import useApiError from "@/hooks/useApiError";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { ErrorBoundary } from "react-error-boundary";
 import Router from "@/routes/Router";
 
 function App() {
