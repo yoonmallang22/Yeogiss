@@ -18,7 +18,7 @@ const Toast = () => {
       position="top-center"
       toastClassName={(context) => contextClass[context?.type || "default"]}
       limit={1}
-      autoClose={1000000}
+      autoClose={3000}
       closeButton={false}
       hideProgressBar
     />
