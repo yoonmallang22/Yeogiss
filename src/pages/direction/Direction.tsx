@@ -1,14 +1,12 @@
 import { useLocation } from "react-router-dom";
-import useUserLocation from "@/hooks/useUserLocation";
 import RouteMap from "@/pages/direction/components/RouteMap";
 import BinInfoCard from "@/pages/home/components/BinInfoCard";
 
 const Direction = () => {
   const location = useLocation();
-  const { selectedBin, arrivedSeconds, totalDistanceMeters } =
+  const { userLocation, selectedBin, arrivedSeconds, totalDistanceMeters } =
     location.state || {};
 
-  const userLocation = useUserLocation();
   const destination = { lat: selectedBin.lat, lng: selectedBin.lng };
 
   return (

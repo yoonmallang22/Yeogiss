@@ -124,7 +124,12 @@ const MapCore = () => {
           showDirectionBtn={true}
           directionBtnClick={(latlng) => {
             navigate(`/directions?lat=${latlng.lat}&lng=${latlng.lng}`, {
-              state: { selectedBin, arrivedSeconds: 0, totalDistanceMeters: 0 }, // TODO: api..
+              state: {
+                userLocation,
+                selectedBin,
+                arrivedSeconds: 0,
+                totalDistanceMeters: 0,
+              }, // TODO: api..
             });
           }}
         />
