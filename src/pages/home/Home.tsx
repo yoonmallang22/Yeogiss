@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import useUserLocation from "@/hooks/useUserLocation";
 import { DEFAULT_POSITION } from "@/constants/geo";
 import type { Bin } from "@/lib/api/bin";
@@ -7,12 +7,18 @@ import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
 import BinInfoCard from "@/pages/home/components/BinInfoCard";
 import { useNavigate } from "react-router-dom";
+import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
+import { KakaoMapContext } from "react-kakao-maps-sdk";
 
 const Home = () => {
   const [binsMap, setBinsMap] = useState<Map<number, Bin>>(new Map());
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
 
+  const kakaoMap = useContext(KakaoMapContext);
   const userLocation = useUserLocation();
+  const { setIsLocationButtonFloat, setIsFollowing } = useContext(
+    UserLocationControlContext,
+  );
   const navigate = useNavigate();
 
   const { data: bins } = useNearbyBins(
@@ -43,6 +49,20 @@ const Home = () => {
     });
   }
 
+  useEffect(() => {
+    if (selectedBin) {
+      setIsLocationButtonFloat(true);
+    } else {
+      setIsLocationButtonFloat(false);
+    }
+  }, [selectedBin, setIsLocationButtonFloat]);
+
+  useEffect(() => {
+    window.kakao.maps.event.addListener(kakaoMap, "click", () => {
+      setSelectedBin(null);
+    });
+  });
+
   return (
     <>
       {/* 현재 위치에서 쓰레기통 찾기 버튼 */}
@@ -50,7 +70,10 @@ const Home = () => {
 
       <BinMarkers
         bins={Array.from(binsMap.values())}
-        onBinClick={(bin) => setSelectedBin(bin)}
+        onBinClick={(bin) => {
+          setSelectedBin(bin);
+          setIsFollowing(false);
+        }}
         selectedId={selectedBin?.binId}
       />
 

@@ -16,8 +16,9 @@ const KakaoMap = () => {
       level={3}
       isPanto={true}
     >
-      <UserLocationControl />
-      <Outlet />
+      <UserLocationControl>
+        <Outlet />
+      </UserLocationControl>
     </Map>
   );
 };

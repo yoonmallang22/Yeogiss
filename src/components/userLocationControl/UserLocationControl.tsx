@@ -1,13 +1,15 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, type ReactNode } from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
 import useUserLocation from "@/hooks/useUserLocation";
 import useGeoPermission from "@/hooks/useGeoPermission";
 import MyMarker from "@/components/userLocationControl/MyMarker";
 import MeButton from "@/components/userLocationControl/MeButton";
+import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 
-const UserLocationControl = () => {
+const UserLocationControl = ({ children }: { children: ReactNode }) => {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isLocationButtonFloat, setIsLocationButtonFloat] = useState(false);
 
   const kakaoMap = useContext(KakaoMapContext);
   const userLocation = useUserLocation();
@@ -46,10 +48,21 @@ const UserLocationControl = () => {
   }, [kakaoMap]);
 
   return (
-    <>
+    <UserLocationControlContext.Provider
+      value={{
+        isFollowing,
+        setIsFollowing,
+        isLocationButtonFloat,
+        setIsLocationButtonFloat,
+      }}
+    >
       {userLocation && <MyMarker myLocation={userLocation} />}
-      <MeButton onClick={handleMeButtonClick} isFollowing={isFollowing} />
-    </>
+      <MeButton
+        onClick={handleMeButtonClick}
+        isFollowing={isFollowing}
+      />
+      {children}
+    </UserLocationControlContext.Provider>
   );
 };
 
