@@ -1,3 +1,6 @@
+import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
+import { useContext } from "react";
+
 interface MeButtonProps {
   onClick: () => void;
   isFollowing: boolean;
@@ -25,10 +28,11 @@ const FollowIcon = ({ color }: { color: string }) => (
 
 const MeButton = ({ onClick, isFollowing }: MeButtonProps) => {
   const strokeColor = isFollowing ? "#00B94E" : "#A5A5A5";
+  const { isLocationButtonFloat } = useContext(UserLocationControlContext);
 
   return (
     <button
-      className="absolute top-2.5 right-2.5 z-[1000] cursor-pointer"
+      className={`absolute ${isLocationButtonFloat ? "bottom-46" : "bottom-7.5"} left-2.5 z-[1000] cursor-pointer`}
       onClick={onClick}
     >
       <FollowIcon color={strokeColor} />
