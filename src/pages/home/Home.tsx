@@ -121,6 +121,7 @@ const MapCore = () => {
             arrivedSeconds: 1, // TODO: api 응답값 수정 필요
             totalDistanceMeters: 1, // TODO: api..
           }}
+          showDirectionBtn={true}
           directionBtnClick={(latlng) => {
             navigate(`/directions?lat=${latlng.lat}&lng=${latlng.lng}`, {
               state: { selectedBin, arrivedSeconds: 0, totalDistanceMeters: 0 }, // TODO: api..

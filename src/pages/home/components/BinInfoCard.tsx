@@ -12,6 +12,7 @@ import Button from "@/components/common/Button";
  */
 const BinInfoCard = ({
   info: { bin, arrivedSeconds, totalDistanceMeters },
+  showDirectionBtn = false,
   directionBtnClick,
 }: {
   info: {
@@ -19,6 +20,7 @@ const BinInfoCard = ({
     arrivedSeconds: number;
     totalDistanceMeters: number;
   };
+  showDirectionBtn?: boolean;
   directionBtnClick?: (latlng: LatLng) => void;
 }) => {
   if (bin && (!arrivedSeconds || !totalDistanceMeters)) return <Skeleton />;
@@ -30,7 +32,7 @@ const BinInfoCard = ({
       : `${totalDistanceMeters}m`;
 
   return (
-    <div className="w-[97%] rounded-2xl shadow-md bg-white p-4 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black">
+    <div className="w-[97%] rounded-2xl shadow-md bg-white p-5 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black">
       {/* 위치명 */}
       <p className="font-medium text-base truncate">
         {bin.detailAddress ? bin.detailAddress : "쓰레기통(정보 없음)"}
@@ -52,7 +54,7 @@ const BinInfoCard = ({
         <div className="flex items-center gap-2">
           <img className="w-8 h-8" src={walkImage} />
           <div>
-            <p className="font-semibold">
+            <p className="font-medium">
               {hour ? `${hour}시간 ` : ""}
               {minute ? `${minute}분 ` : ""}
               {hour <= 0 && seconds ? `${seconds}초` : ""} 후 도착
@@ -62,14 +64,16 @@ const BinInfoCard = ({
         </div>
 
         {/* 버튼 */}
-        <Button
-          onClick={() => {
-            if (directionBtnClick)
-              directionBtnClick({ lat: bin.lat, lng: bin.lng });
-          }}
-        >
-          길 안내
-        </Button>
+        {showDirectionBtn && (
+          <Button
+            onClick={() => {
+              if (directionBtnClick)
+                directionBtnClick({ lat: bin.lat, lng: bin.lng });
+            }}
+          >
+            길 안내
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -77,7 +81,7 @@ const BinInfoCard = ({
 
 const Skeleton = () => {
   return (
-    <div className="w-[97%] rounded-2xl shadow-md bg-white p-4 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black animate-pulse">
+    <div className="w-[97%] rounded-2xl shadow-md bg-white p-5 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black animate-pulse">
       <div className="h-6 bg-gray-300 rounded w-3/4"></div>
       <div className="h-5 bg-gray-300 rounded w-full"></div>
       <div className="h-10 bg-gray-300 rounded w-1/3"></div>
