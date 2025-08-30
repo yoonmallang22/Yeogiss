@@ -1,9 +1,10 @@
-import regularMarkerImage from '@/assets/regular-marker.svg';
-import selectedMarkerImage from '@/assets/target-marker.svg';
-import type { Bin } from '@/lib/api/bin';
-import { useContext, useEffect } from 'react';
-import { KakaoMapContext, MapMarker } from 'react-kakao-maps-sdk';
+import regularMarkerImage from "@/assets/regular-marker.svg";
+import selectedMarkerImage from "@/assets/target-marker.svg";
+import type { Bin } from "@/lib/api/bin";
+import { useContext } from "react";
+import { KakaoMapContext, MapMarker } from "react-kakao-maps-sdk";
 
+// 마커 이미지, 기존 이미지 사이즈의 1.5배
 const IMAGE = {
   regular: {
     src: regularMarkerImage,
@@ -35,17 +36,6 @@ const BinMarkers = ({
 }) => {
   const kakaoMap = useContext(KakaoMapContext);
 
-  // selectedId가 바뀔 때마다 해당 좌표로 지도 중심 이동
-  useEffect(() => {
-    // kakaoMap이 준비되지 않았거나, selectedId가 null이면 동작하지 않음
-    if (!kakaoMap || selectedId === null) return;
-
-    if (moveToSelected && bins.length) {
-      const selectedBin = bins.find((bin) => bin.binId === selectedId);
-      if (!selectedBin) return;
-      kakaoMap.panTo(new kakao.maps.LatLng(selectedBin.lat, selectedBin.lng));
-    }
-  }, [selectedId, bins, kakaoMap, moveToSelected]);
   return (
     <>
       {bins.length &&
@@ -57,7 +47,12 @@ const BinMarkers = ({
               clickable={true}
               image={selectedId === bin.binId ? IMAGE.selected : IMAGE.regular}
               onClick={() => {
-                if (onBinClick) onBinClick(bin);
+                if (onBinClick) {
+                  onBinClick(bin);
+                }
+                if (moveToSelected) {
+                  kakaoMap.panTo(new kakao.maps.LatLng(bin.lat, bin.lng));
+                }
               }}
             />
           );
