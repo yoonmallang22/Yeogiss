@@ -24,7 +24,7 @@ const LoadBinsButton = ({
     lastCenterRef.current = kakaoMap.getCenter();
 
     // 드래그 이벤트: 캐싱된 중심 값에서 몇 m 이동했는지 체크하고, 임계치를 초과하면 화면에 표시
-    window.kakao.maps.event.addListener(kakaoMap, "dragend", () => {
+    window.kakao.maps.event.addListener(kakaoMap, "idle", () => {
       const newCenter = kakaoMap.getCenter();
       const prevCenter = lastCenterRef.current;
 
