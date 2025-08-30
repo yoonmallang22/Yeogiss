@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Map } from "react-kakao-maps-sdk";
+import { useState, useEffect, useCallback, useContext } from "react";
+import { KakaoMapContext, Map as KakaoMap } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
 import useKakaoLoader from "@/hooks/useKakaoLoader";
 import useUserLocation from "@/hooks/useUserLocation";
@@ -9,18 +9,24 @@ import MyMarker from "@/pages/home/components/MyMarker";
 
 const Home = () => {
   useKakaoLoader();
-
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [center, setCenter] = useState(DEFAULT_POSITION);
   const userLocation = useUserLocation();
-  const mapRef = useRef<kakao.maps.Map | null>(null);
 
-  /* 지도 중심 이동 헬퍼 */
-  const moveMapCenter = useCallback((lat: number, lng: number) => {
-    if (mapRef.current) {
-      mapRef.current.setCenter(new kakao.maps.LatLng(lat, lng));
-    }
-  }, []);
+  return (
+    <KakaoMap
+      center={userLocation ?? DEFAULT_POSITION}
+      className="w-full h-screen"
+      level={3}
+      isPanto={true}
+    >
+      <MapCore />
+    </KakaoMap>
+  );
+};
+
+const MapCore = () => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const kakaoMap = useContext(KakaoMapContext);
+  const userLocation = useUserLocation();
 
   /* 위치 권한 상태 변경 처리 */
   const handlePermissionChange = useCallback((status: PermissionStatus) => {
@@ -57,10 +63,9 @@ const Home = () => {
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
     if (userLocation && isFollowing) {
-      setCenter(userLocation);
-      moveMapCenter(userLocation.lat, userLocation.lng);
+      kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
     }
-  }, [userLocation, isFollowing, moveMapCenter]);
+  }, [userLocation, isFollowing, kakaoMap]);
 
   /* '내 위치' 버튼 클릭 시 동작 */
   const handleMeButtonClick = () => {
@@ -70,33 +75,23 @@ const Home = () => {
     }
     // 자동 추적 모드 활성화 + 지도 중심 이동
     setIsFollowing(true);
-    moveMapCenter(userLocation.lat, userLocation.lng);
+    kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
   };
 
-  /* 지도 드래그 or 줌 시 자동 추적 해제 + 중심 좌표 저장 */
-  const handleDragOrZoom = () => {
-    if (mapRef.current) {
-      const currentCenter = mapRef.current.getCenter();
-      setCenter({ lat: currentCenter.getLat(), lng: currentCenter.getLng() });
-    }
-    setIsFollowing(false);
-  };
+  useEffect(() => {
+    window.kakao.maps.event.addListener(kakaoMap, "dragstart", () => {
+      setIsFollowing(false);
+    });
+    window.kakao.maps.event.addListener(kakaoMap, "zoom_changed", () => {
+      setIsFollowing(false);
+    });
+  }, [kakaoMap]);
 
   return (
-    <div className="w-full h-screen">
-      <Map
-        center={center}
-        className="w-full h-full"
-        level={3}
-        ref={mapRef}
-        onDragStart={handleDragOrZoom}
-        onZoomChanged={handleDragOrZoom}
-      >
-        {userLocation && <MyMarker myLocation={userLocation} />}
-      </Map>
-
+    <>
+      {userLocation && <MyMarker myLocation={userLocation} />}
       <MeButton onClick={handleMeButtonClick} isFollowing={isFollowing} />
-    </div>
+    </>
   );
 };
 
