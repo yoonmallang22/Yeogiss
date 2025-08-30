@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import Router from "@/routes/Router";
+import Toast from "@/components/common/Toast";
 
 function App() {
   const { handleError } = useApiError();
@@ -26,6 +27,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary FallbackComponent={FallbackComponent}>
         <Router />
+        <Toast />
       </ErrorBoundary>
     </QueryClientProvider>
   );
