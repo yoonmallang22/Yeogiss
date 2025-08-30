@@ -51,7 +51,7 @@ const Home = () => {
 
   useEffect(() => {
     window.kakao.maps.event.addListener(kakaoMap, "click", clearBinStates);
-  });
+  }, [kakaoMap]);
 
   // 쓰레기통 데이터를 추가하는 함수, 중복 데이터인 경우 업데이트 하지 않는다.
   const addBinData = (newBins: Bin[]) => {
