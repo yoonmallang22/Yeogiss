@@ -31,3 +31,12 @@ export const getDistance = (p1: LatLng, p2: LatLng) => {
 
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
+
+/**
+ * 미터 단위를 km 단위로 변환 (소수점 1자리 반올림)
+ */
+export function metersToKilometers(meters: number) {
+  const km = meters / 1000; // 미터 → km
+  const rounded = Math.round(km * 10) / 10; // 소수점 1자리 반올림
+  return rounded;
+}
