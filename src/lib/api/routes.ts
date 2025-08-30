@@ -2,7 +2,7 @@ import ENDPOINTS from "@/constants/api";
 import axiosInstance from "@/lib/axiosInstance";
 import type { ApiResponse } from "@/types/api.type";
 
-interface GetRoutesParams {
+export interface GetRoutesParams {
   startLat: number;
   startLng: number;
   endLat: number;

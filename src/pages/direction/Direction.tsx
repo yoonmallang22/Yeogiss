@@ -15,8 +15,8 @@ const Direction = () => {
       <BinInfoCard
         info={{
           bin: selectedBin,
-          arrivedSeconds: 1,
-          totalDistanceMeters: 1,
+          arrivedSeconds,
+          totalDistanceMeters,
         }}
       />
     </>

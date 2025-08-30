@@ -9,17 +9,22 @@ import BinInfoCard from "@/pages/home/components/BinInfoCard";
 import { useNavigate } from "react-router-dom";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
+import fetchRoutes, { type GetRoutesParams } from "@/lib/api/routes";
 
 const Home = () => {
   const [binsMap, setBinsMap] = useState<Map<number, Bin>>(new Map());
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
+  const [routesData, setRoutesData] = useState<{
+    estimatedTimeSeconds: number;
+    totalDistanceMeters: number;
+  }>({ estimatedTimeSeconds: 0, totalDistanceMeters: 0 });
 
   const kakaoMap = useContext(KakaoMapContext);
   const userLocation = useUserLocation();
+  const navigate = useNavigate();
   const { setIsLocationButtonFloat, setIsFollowing } = useContext(
     UserLocationControlContext,
   );
-  const navigate = useNavigate();
 
   const { data: bins } = useNearbyBins(
     userLocation
@@ -36,19 +41,6 @@ const Home = () => {
     }
   }, [bins]);
 
-  // 쓰레기통 데이터를 추가하는 함수, 중복 데이터인 경우 업데이트 하지 않는다.
-  function addBinData(newBins: Bin[]) {
-    setBinsMap((prev) => {
-      const copy = new Map(prev);
-      newBins.forEach((bin) => {
-        if (!copy.has(bin.binId)) {
-          copy.set(bin.binId, bin);
-        }
-      });
-      return copy;
-    });
-  }
-
   useEffect(() => {
     if (selectedBin) {
       setIsLocationButtonFloat(true);
@@ -58,10 +50,30 @@ const Home = () => {
   }, [selectedBin, setIsLocationButtonFloat]);
 
   useEffect(() => {
-    window.kakao.maps.event.addListener(kakaoMap, "click", () => {
-      setSelectedBin(null);
-    });
+    window.kakao.maps.event.addListener(kakaoMap, "click", clearBinStates);
   });
+
+  // 쓰레기통 데이터를 추가하는 함수, 중복 데이터인 경우 업데이트 하지 않는다.
+  const addBinData = (newBins: Bin[]) => {
+    setBinsMap((prev) => {
+      const copy = new Map(prev);
+      newBins.forEach((bin) => {
+        if (!copy.has(bin.binId)) {
+          copy.set(bin.binId, bin);
+        }
+      });
+      return copy;
+    });
+  };
+
+  // 쓰레기통 관련 상태를 초기화
+  const clearBinStates = () => {
+    setSelectedBin(null);
+    setRoutesData({ estimatedTimeSeconds: 0, totalDistanceMeters: 0 });
+  };
+
+  // 유저가 위치 권한 거부한 경우 렌더링 X
+  if (!userLocation) return null;
 
   return (
     <>
@@ -71,8 +83,24 @@ const Home = () => {
       <BinMarkers
         bins={Array.from(binsMap.values())}
         onBinClick={(bin) => {
+          clearBinStates();
           setSelectedBin(bin);
           setIsFollowing(false);
+          if (userLocation) {
+            const params: GetRoutesParams = {
+              startLat: userLocation.lat,
+              startLng: userLocation.lng,
+              endLat: bin.lat,
+              endLng: bin.lng,
+              startName: "start",
+              endName: "end",
+            };
+            fetchRoutes(params).then((response) => {
+              const { estimatedTimeSeconds, totalDistanceMeters } =
+                response.data;
+              setRoutesData({ estimatedTimeSeconds, totalDistanceMeters });
+            });
+          }
         }}
         selectedId={selectedBin?.binId}
       />
@@ -82,18 +110,18 @@ const Home = () => {
         <BinInfoCard
           info={{
             bin: selectedBin,
-            arrivedSeconds: 1, // TODO: api 응답값 수정 필요
-            totalDistanceMeters: 1, // TODO: api..
+            arrivedSeconds: routesData.estimatedTimeSeconds,
+            totalDistanceMeters: routesData.totalDistanceMeters,
           }}
           showDirectionBtn={true}
-          directionBtnClick={(latlng) => {
-            navigate(`/directions?lat=${latlng.lat}&lng=${latlng.lng}`, {
+          directionBtnClick={() => {
+            navigate("/directions", {
               state: {
                 userLocation,
                 selectedBin,
-                arrivedSeconds: 0,
-                totalDistanceMeters: 0,
-              }, // TODO: api..
+                arrivedSeconds: routesData.estimatedTimeSeconds,
+                totalDistanceMeters: routesData.totalDistanceMeters,
+              },
             });
           }}
         />
