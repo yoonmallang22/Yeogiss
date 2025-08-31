@@ -1,8 +1,6 @@
 import { useState, useEffect, useContext, type ReactNode } from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
-//import useUserLocation from "@/hooks/useUserLocation";
-//import useGeoPermission from "@/hooks/useGeoPermission";
 import MyMarker from "@/components/userLocationControl/MyMarker";
 import MeButton from "@/components/userLocationControl/MeButton";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
