@@ -40,7 +40,7 @@ const BinInfoCard = ({
 
       {/* 설치 위치 */}
       <div className="flex items-center gap-2 text-sm">
-        {bin.type === "regular" ? (
+        {bin.type === "GENERAL" ? (
           <img className="w-4 h-5" src={regularBinIcon} />
         ) : (
           <img className="w-5 h-5" src={recycleBinIcon} />

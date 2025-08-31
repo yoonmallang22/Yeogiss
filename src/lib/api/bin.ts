@@ -9,7 +9,7 @@ export interface Bin {
   roadAddress: string;
   detailAddress: string;
   distanceMeters: number;
-  type: "regular" | "recycle";
+  type: "GENERAL" | "RECYCLE";
 }
 
 export type GetNearByBins = (
