@@ -1,41 +1,36 @@
 import { useState, useEffect, useContext, type ReactNode } from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
-import useUserLocation from "@/hooks/useUserLocation";
-import useGeoPermission from "@/hooks/useGeoPermission";
 import MyMarker from "@/components/userLocationControl/MyMarker";
 import MeButton from "@/components/userLocationControl/MeButton";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { useLocation } from "react-router-dom";
+import type { LatLng } from "@/types/geolocation.type";
 
-const UserLocationControl = ({ children }: { children: ReactNode }) => {
-  const [isFollowing, setIsFollowing] = useState(false);
+/**
+ * 위치 권한이 있는 경우에만 렌더링 되는 유저 위치 관련 컴포넌트
+ * 내 위치 버튼 + 현재 위치 마커
+ */
+const UserLocationControl = ({
+  userLocation,
+  children,
+}: {
+  userLocation: LatLng;
+  children: ReactNode;
+}) => {
+  // 초기 진입시에는 자동 추적 on
+  const [isFollowing, setIsFollowing] = useState(true);
   const [isLocationButtonFloat, setIsLocationButtonFloat] = useState(false);
 
   const location = useLocation();
   const kakaoMap = useContext(KakaoMapContext);
-  const userLocation = useUserLocation();
-  const permission = useGeoPermission();
-
-  /* 권한 상태 변화 시 자동 추적 모드 제어 */
-  useEffect(() => {
-    // home이 아닌 경우 화면 진입시 follow 자동 설정 X
-    if (location.pathname !== "/") return;
-
-    if (permission === "granted" && userLocation) {
-      setIsFollowing(true);
-      kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
-    } else {
-      setIsFollowing(false);
-    }
-  }, [permission, location, userLocation, kakaoMap]);
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
-    if (permission === "granted" && userLocation && isFollowing) {
+    if (userLocation && isFollowing) {
       kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
     }
-  }, [userLocation, isFollowing, kakaoMap, permission]);
+  }, [userLocation, isFollowing, kakaoMap]);
 
   /* '내 위치' 버튼 클릭 시 동작 */
   const handleMeButtonClick = () => {
@@ -48,6 +43,7 @@ const UserLocationControl = ({ children }: { children: ReactNode }) => {
     kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
   };
 
+  // 사용자가 화면을 조작한 경우 자동 추적 off
   useEffect(() => {
     window.kakao.maps.event.addListener(kakaoMap, "dragstart", () => {
       setIsFollowing(false);

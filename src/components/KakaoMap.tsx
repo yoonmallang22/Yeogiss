@@ -18,12 +18,12 @@ const KakaoMap = () => {
       level={3}
       isPanto={true}
     >
-      <UserLocationControl>
+      <UserLocationControl userLocation={userLocation}>
         <Outlet />
       </UserLocationControl>
     </Map>
   ) : (
-    <Map center={DEFAULT_POSITION} />
+    <Map center={DEFAULT_POSITION} className="w-full h-screen" />
   );
 };
 
