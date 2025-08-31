@@ -9,6 +9,7 @@ import { UserLocationControlContext } from "@/components/userLocationControl/Use
 import { useLocation } from "react-router-dom";
 import type { LatLng } from "@/types/geolocation.type";
 
+// 위치권한 있을때만 보여지는 컴포넌트
 const UserLocationControl = ({
   userLocation,
   children,
@@ -16,7 +17,8 @@ const UserLocationControl = ({
   userLocation: LatLng;
   children: ReactNode;
 }) => {
-  const [isFollowing, setIsFollowing] = useState(false);
+  // home 진입시 자동 추적 on
+  const [isFollowing, setIsFollowing] = useState(true);
   const [isLocationButtonFloat, setIsLocationButtonFloat] = useState(false);
 
   const location = useLocation();
@@ -33,9 +35,9 @@ const UserLocationControl = ({
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
-    if (isFollowing) {
-      kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
-    }
+    if (!isFollowing) return;
+
+    kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
   }, [userLocation, isFollowing, kakaoMap]);
 
   /* '내 위치' 버튼 클릭 시 동작 */
