@@ -28,6 +28,7 @@ const UserLocationControl = ({
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
     if (userLocation && isFollowing) {
+      console.log(userLocation);
       kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
     }
   }, [userLocation, isFollowing, kakaoMap]);
