@@ -1,29 +1,25 @@
 import { Map } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@/hooks/useKakaoLoader";
+import useUserLocation from "@/hooks/useUserLocation";
 import { DEFAULT_POSITION } from "@/constants/geo";
 import { Outlet } from "react-router-dom";
 import UserLocationControl from "@/components/userLocationControl/UserLocationControl";
-import useGeoPermission from "@/hooks/useGeoPermission";
-import useUserLocation from "@/hooks/useUserLocation";
 
 const KakaoMap = () => {
   useKakaoLoader();
-  const permission = useGeoPermission();
   const userLocation = useUserLocation();
 
-  return permission === "granted" && userLocation ? (
+  return (
     <Map
-      center={userLocation}
+      center={userLocation ?? DEFAULT_POSITION}
       className="w-full h-screen"
       level={3}
       isPanto={true}
     >
-      <UserLocationControl userLocation={userLocation}>
+      <UserLocationControl>
         <Outlet />
       </UserLocationControl>
     </Map>
-  ) : (
-    <Map center={DEFAULT_POSITION} className="w-full h-screen" />
   );
 };
 

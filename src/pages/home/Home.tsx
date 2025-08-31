@@ -51,7 +51,7 @@ const Home = () => {
 
   useEffect(() => {
     window.kakao.maps.event.addListener(kakaoMap, "click", clearBinStates);
-  }, [kakaoMap]);
+  });
 
   // 쓰레기통 관련 상태를 초기화
   const clearBinStates = () => {

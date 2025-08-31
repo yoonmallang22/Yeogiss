@@ -1,5 +1,4 @@
 import reloadImage from "@/assets/restart.svg";
-import useGeoPermission from "@/hooks/useGeoPermission";
 import { getNearbyBins, type Bin } from "@/lib/api/bin";
 import { useContext, useEffect, useRef, useState } from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
@@ -19,11 +18,9 @@ const LoadBinsButton = ({
   const kakaoMap = useContext(KakaoMapContext);
   // 이전 지도 중심에 대한 좌표를 기억한다.
   const lastCenterRef = useRef<kakao.maps.LatLng | null>(null);
-  const permission = useGeoPermission();
 
   useEffect(() => {
-    if (!kakaoMap || permission !== "granted") return;
-
+    if (!kakaoMap) return;
     lastCenterRef.current = kakaoMap.getCenter();
 
     // 드래그 이벤트: 캐싱된 중심 값에서 몇 m 이동했는지 체크하고, 임계치를 초과하면 화면에 표시
@@ -48,7 +45,7 @@ const LoadBinsButton = ({
         setShow(false);
       }
     });
-  }, [kakaoMap, showThreshold, permission]);
+  }, [kakaoMap, showThreshold]);
 
   if (!show) return null;
 
