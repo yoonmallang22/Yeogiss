@@ -19,17 +19,23 @@ const UserLocationControl = ({ children }: { children: ReactNode }) => {
 
   /* 권한 상태 변화 시 자동 추적 모드 제어 */
   useEffect(() => {
-    if (location.pathname === "/") {
-      setIsFollowing(permission === "granted");
+    // home이 아닌 경우 화면 진입시 follow 자동 설정 X
+    if (location.pathname !== "/") return;
+
+    if (permission === "granted" && userLocation) {
+      setIsFollowing(true);
+      kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
+    } else {
+      setIsFollowing(false);
     }
-  }, [permission, location]);
+  }, [permission, location, userLocation, kakaoMap]);
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
-    if (userLocation && isFollowing) {
+    if (permission === "granted" && userLocation && isFollowing) {
       kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
     }
-  }, [userLocation, isFollowing, kakaoMap]);
+  }, [userLocation, isFollowing, kakaoMap, permission]);
 
   /* '내 위치' 버튼 클릭 시 동작 */
   const handleMeButtonClick = () => {
