@@ -1,15 +1,23 @@
+import { useRef } from "react";
 import { Map } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@/hooks/useKakaoLoader";
 import useUserLocation from "@/hooks/useUserLocation";
 import { DEFAULT_POSITION } from "@/constants/geo";
 import { Outlet } from "react-router-dom";
 import UserLocationControl from "@/components/userLocationControl/UserLocationControl";
-import { useRef } from "react";
+import useEffectOnce from "@/hooks/useEffectOnce";
+import type { LatLng } from "@/types/geolocation.type";
 
 const KakaoMap = () => {
   useKakaoLoader();
   const userLocation = useUserLocation();
-  const userLocationRef = useRef(userLocation);
+  const userLocationRef = useRef<LatLng | null>(null);
+
+  useEffectOnce(() => {
+    if (userLocation) {
+      userLocationRef.current = userLocation;
+    }
+  }, []);
 
   if (userLocation === null || userLocationRef.current === null) {
     return <Map center={DEFAULT_POSITION} className="w-full h-screen" />;
