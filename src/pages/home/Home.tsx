@@ -12,7 +12,7 @@ import { KakaoMapContext } from "react-kakao-maps-sdk";
 import fetchRoutes, { type GetRoutesParams } from "@/lib/api/routes";
 
 const Home = () => {
-  const [binsMap, setBinsMap] = useState<Map<number, Bin>>(new Map());
+  const [bins, setBins] = useState<Bin[]>([]);
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
   const [routesData, setRoutesData] = useState<{
     estimatedTimeSeconds: number;
@@ -26,7 +26,7 @@ const Home = () => {
     UserLocationControlContext,
   );
 
-  const { data: bins } = useNearbyBins(
+  const { data: binsData } = useNearbyBins(
     userLocation
       ? [userLocation.lat, userLocation.lng]
       : [DEFAULT_POSITION.lat, DEFAULT_POSITION.lng],
@@ -36,10 +36,10 @@ const Home = () => {
   );
 
   useEffect(() => {
-    if (bins) {
-      addBinData(bins);
+    if (binsData) {
+      setBins(binsData);
     }
-  }, [bins]);
+  }, [binsData]);
 
   useEffect(() => {
     if (selectedBin) {
@@ -53,19 +53,6 @@ const Home = () => {
     window.kakao.maps.event.addListener(kakaoMap, "click", clearBinStates);
   }, [kakaoMap]);
 
-  // 쓰레기통 데이터를 추가하는 함수, 중복 데이터인 경우 업데이트 하지 않는다.
-  const addBinData = (newBins: Bin[]) => {
-    setBinsMap((prev) => {
-      const copy = new Map(prev);
-      newBins.forEach((bin) => {
-        if (!copy.has(bin.binId)) {
-          copy.set(bin.binId, bin);
-        }
-      });
-      return copy;
-    });
-  };
-
   // 쓰레기통 관련 상태를 초기화
   const clearBinStates = () => {
     setSelectedBin(null);
@@ -78,10 +65,10 @@ const Home = () => {
   return (
     <>
       {/* 현재 위치에서 쓰레기통 찾기 버튼 */}
-      <LoadBinsButton onLoaded={(bins) => addBinData(bins)} />
+      <LoadBinsButton onLoaded={(bins) => setBins(bins)} />
 
       <BinMarkers
-        bins={Array.from(binsMap.values())}
+        bins={bins}
         onBinClick={(bin) => {
           clearBinStates();
           setSelectedBin(bin);
