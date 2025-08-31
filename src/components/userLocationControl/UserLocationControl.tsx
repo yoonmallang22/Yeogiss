@@ -1,32 +1,39 @@
 import { useState, useEffect, useContext, type ReactNode } from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
-import useUserLocation from "@/hooks/useUserLocation";
-import useGeoPermission from "@/hooks/useGeoPermission";
+//import useUserLocation from "@/hooks/useUserLocation";
+//import useGeoPermission from "@/hooks/useGeoPermission";
 import MyMarker from "@/components/userLocationControl/MyMarker";
 import MeButton from "@/components/userLocationControl/MeButton";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { useLocation } from "react-router-dom";
+import type { LatLng } from "@/types/geolocation.type";
 
-const UserLocationControl = ({ children }: { children: ReactNode }) => {
+const UserLocationControl = ({
+  userLocation,
+  children,
+}: {
+  userLocation: LatLng;
+  children: ReactNode;
+}) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isLocationButtonFloat, setIsLocationButtonFloat] = useState(false);
 
   const location = useLocation();
   const kakaoMap = useContext(KakaoMapContext);
-  const userLocation = useUserLocation();
-  const permission = useGeoPermission();
+  //const userLocation = useUserLocation();
+  //const permission = useGeoPermission();
 
   /* 권한 상태 변화 시 자동 추적 모드 제어 */
-  useEffect(() => {
-    if (location.pathname === "/") {
-      setIsFollowing(permission === "granted");
-    }
-  }, [permission, location]);
+  // useEffect(() => {
+  //   if (location.pathname === "/") {
+  //     setIsFollowing(permission === "granted");
+  //   }
+  // }, [permission, location]);
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
-    if (userLocation && isFollowing) {
+    if (isFollowing) {
       kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
     }
   }, [userLocation, isFollowing, kakaoMap]);

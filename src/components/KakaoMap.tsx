@@ -10,13 +10,8 @@ const KakaoMap = () => {
   const userLocation = useUserLocation();
 
   return userLocation ? (
-    <Map
-      center={userLocation}
-      className="w-full h-screen"
-      level={3}
-      isPanto={true}
-    >
-      <UserLocationControl>
+    <Map center={userLocation} className="w-full h-screen" level={3}>
+      <UserLocationControl userLocation={userLocation}>
         <Outlet />
       </UserLocationControl>
     </Map>
