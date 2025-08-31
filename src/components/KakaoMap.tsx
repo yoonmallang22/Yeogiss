@@ -17,7 +17,7 @@ const KakaoMap = () => {
     if (userLocation) {
       userLocationRef.current = userLocation;
     }
-  }, []);
+  }, [userLocation]);
 
   if (userLocation === null || userLocationRef.current === null) {
     return <Map center={DEFAULT_POSITION} className="w-full h-screen" />;
