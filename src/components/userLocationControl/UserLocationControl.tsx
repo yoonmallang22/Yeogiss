@@ -23,15 +23,6 @@ const UserLocationControl = ({
 
   const location = useLocation();
   const kakaoMap = useContext(KakaoMapContext);
-  //const userLocation = useUserLocation();
-  //const permission = useGeoPermission();
-
-  /* 권한 상태 변화 시 자동 추적 모드 제어 */
-  // useEffect(() => {
-  //   if (location.pathname === "/") {
-  //     setIsFollowing(permission === "granted");
-  //   }
-  // }, [permission, location]);
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
