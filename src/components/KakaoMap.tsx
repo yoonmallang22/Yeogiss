@@ -9,9 +9,9 @@ const KakaoMap = () => {
   useKakaoLoader();
   const userLocation = useUserLocation();
 
-  return (
+  return userLocation ? (
     <Map
-      center={userLocation ?? DEFAULT_POSITION}
+      center={userLocation}
       className="w-full h-screen"
       level={3}
       isPanto={true}
@@ -20,6 +20,8 @@ const KakaoMap = () => {
         <Outlet />
       </UserLocationControl>
     </Map>
+  ) : (
+    <Map center={DEFAULT_POSITION} className="w-full h-screen" />
   );
 };
 
