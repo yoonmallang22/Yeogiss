@@ -7,10 +7,7 @@ import { UserLocationControlContext } from "@/components/userLocationControl/Use
 import { useLocation } from "react-router-dom";
 import type { LatLng } from "@/types/geolocation.type";
 
-/**
- * 위치 권한이 있는 경우에만 렌더링 되는 유저 위치 관련 컴포넌트
- * 내 위치 버튼 + 현재 위치 마커
- */
+// 위치권한 있을때만 보여지는 컴포넌트
 const UserLocationControl = ({
   userLocation,
   children,
@@ -18,7 +15,7 @@ const UserLocationControl = ({
   userLocation: LatLng;
   children: ReactNode;
 }) => {
-  // 초기 진입시에는 자동 추적 on
+  // home 진입시 자동 추적 on
   const [isFollowing, setIsFollowing] = useState(true);
   const [isLocationButtonFloat, setIsLocationButtonFloat] = useState(false);
 
@@ -27,9 +24,9 @@ const UserLocationControl = ({
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
-    if (userLocation && isFollowing) {
-      kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
-    }
+    if (!isFollowing) return;
+
+    kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
   }, [userLocation, isFollowing, kakaoMap]);
 
   /* '내 위치' 버튼 클릭 시 동작 */
@@ -43,7 +40,6 @@ const UserLocationControl = ({
     kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
   };
 
-  // 사용자가 화면을 조작한 경우 자동 추적 off
   useEffect(() => {
     window.kakao.maps.event.addListener(kakaoMap, "dragstart", () => {
       setIsFollowing(false);
