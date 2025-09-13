@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import type { LatLng } from "@/types/geolocation.type";
 import useGeoPermission from "@/hooks/useGeoPermission";
+import { trackEvent } from "@/lib/trackEvent";
+import { getScreenName } from "@/utils/ga";
 
 const useUserLocation = (
   options?: PositionOptions,
@@ -36,6 +38,12 @@ const useUserLocation = (
       (err) => {
         console.error("위치 추적 실패:", err);
         setPosition(null);
+
+        trackEvent("ERROR_OCCURRED", {
+          error_code: err.code,
+          error_message: err.message,
+          screen_name: getScreenName(location.pathname),
+        });
       },
       {
         enableHighAccuracy: true,
