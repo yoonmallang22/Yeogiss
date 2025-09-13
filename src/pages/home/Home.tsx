@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import fetchRoutes, { type GetRoutesParams } from "@/lib/api/routes";
+import { trackEvent } from "@/lib/trackEvent";
+import { getScreenName } from "@/utils/ga";
 
 const Home = () => {
   const [bins, setBins] = useState<Bin[]>([]);
@@ -88,6 +90,13 @@ const Home = () => {
               setRoutesData({ estimatedTimeSeconds, totalDistanceMeters });
             });
           }
+
+          trackEvent("TRASH_BIN_MARKER_CLICKED", {
+            method: "click",
+            marker_id: selectedBin?.binId,
+            marker_type: selectedBin?.type,
+            screen_name: getScreenName(location.pathname),
+          });
         }}
         selectedId={selectedBin?.binId}
       />
@@ -109,6 +118,15 @@ const Home = () => {
                 arrivedSeconds: routesData.estimatedTimeSeconds,
                 totalDistanceMeters: routesData.totalDistanceMeters,
               },
+            });
+
+            trackEvent("ROUTE_SEARCH_INITIATED", {
+              method: "click",
+              start_point: JSON.stringify(userLocation),
+              end_point: JSON.stringify({
+                lat: selectedBin.lat,
+                lng: selectedBin.lng,
+              }),
             });
           }}
         />

@@ -1,4 +1,6 @@
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
+import { trackEvent } from "@/lib/trackEvent";
+import { getScreenName } from "@/utils/ga";
 import { useContext } from "react";
 
 interface MeButtonProps {
@@ -33,7 +35,14 @@ const MeButton = ({ onClick, isFollowing }: MeButtonProps) => {
   return (
     <button
       className={`absolute ${isLocationButtonFloat ? "bottom-46" : "bottom-7.5"} left-2.5 z-[1000] cursor-pointer`}
-      onClick={onClick}
+      onClick={() => {
+        onClick();
+
+        trackEvent("CURRENT_LOCATION_SELECTED", {
+          method: "click",
+          screen_name: getScreenName(location.pathname),
+        });
+      }}
     >
       <FollowIcon color={strokeColor} />
     </button>

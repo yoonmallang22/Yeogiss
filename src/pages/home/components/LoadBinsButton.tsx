@@ -1,5 +1,7 @@
 import reloadImage from "@/assets/restart.svg";
 import { getNearbyBins, type Bin } from "@/lib/api/bin";
+import { trackEvent } from "@/lib/trackEvent";
+import { getScreenName } from "@/utils/ga";
 import { useContext, useEffect, useRef, useState } from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
@@ -72,6 +74,11 @@ const LoadBinsButton = ({
           } else {
             if (onLoaded) onLoaded(response.data);
           }
+        });
+
+        trackEvent("TRASH_BIN_DATA_REFRESHED", {
+          method: "click",
+          screen_name: getScreenName(location.pathname),
         });
       }}
     >
