@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useCallback } from "react";
 import { toast } from "react-toastify";
+import { trackEvent } from "@/lib/trackEvent";
+import { getScreenName } from "@/utils/ga";
 
 const useApiError = () => {
   const handleError = useCallback((error: unknown) => {
@@ -9,10 +11,21 @@ const useApiError = () => {
         const httpStatus = error.response.status;
         const httpMessage = error.response.data.message;
 
+        trackEvent("ERROR_OCCURRED", {
+          error_code: httpStatus,
+          error_message: httpMessage,
+          screen_name: getScreenName(location.pathname),
+        });
+
         const handler =
           statusHandlers[httpStatus as keyof typeof statusHandlers] ??
           statusHandlers.default;
         handler(httpMessage);
+
+        trackEvent("TOAST_MESSAGE_DISPLAYED", {
+          message_type: httpStatus >= 500 ? "server_error" : "client_error",
+          message_content: httpMessage,
+        });
         return;
       } else {
         toast.error("서버 연결이 원활하지 않습니다.");
