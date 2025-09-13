@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import useUserLocation from "@/hooks/useUserLocation";
 import { DEFAULT_POSITION } from "@/constants/geo";
-import type { Bin } from "@/lib/api/bin";
+import { getBinById, type Bin } from "@/lib/api/bin";
 import useNearbyBins from "@/hooks/useNearbyBins";
 import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
@@ -9,7 +9,6 @@ import BinInfoCard from "@/pages/home/components/BinInfoCard";
 import { useNavigate } from "react-router-dom";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
-import fetchRoutes, { type GetRoutesParams } from "@/lib/api/routes";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
 
@@ -72,30 +71,24 @@ const Home = () => {
       <BinMarkers
         bins={bins}
         onBinClick={(bin) => {
-          clearBinStates();
-          setSelectedBin(bin);
-          setIsFollowing(false);
-          if (userLocation) {
-            const params: GetRoutesParams = {
-              startLat: userLocation.lat,
-              startLng: userLocation.lng,
-              endLat: bin.lat,
-              endLng: bin.lng,
-              startName: "start",
-              endName: "end",
-            };
-            fetchRoutes(params).then((response) => {
-              const { estimatedTimeSeconds, totalDistanceMeters } =
-                response.data;
-              setRoutesData({ estimatedTimeSeconds, totalDistanceMeters });
-            });
-          }
-
           trackEvent("TRASH_BIN_MARKER_CLICKED", {
             method: "click",
             marker_id: selectedBin?.binId,
             marker_type: selectedBin?.type,
             screen_name: getScreenName(location.pathname),
+          });
+
+          if (!userLocation) return;
+          clearBinStates();
+          setSelectedBin(bin);
+          setIsFollowing(false);
+
+          getBinById({
+            binId: bin.binId,
+            currentLat: userLocation.lat,
+            currentLng: userLocation.lng,
+          }).then((response) => {
+            setSelectedBin(response.data);
           });
         }}
         selectedId={selectedBin?.binId}
