@@ -1,3 +1,5 @@
+import { trackEvent } from "@/lib/trackEvent";
+import { getScreenName, getDeviceInfo } from "@/utils/ga";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -20,11 +22,27 @@ const useGeoPermission = (): PermissionState => {
       .then((status) => {
         permissionStatus = status;
         // 초기 권한 상태 반영
-        setPermission(status.state as PermissionState);
+        const initialState = status.state as PermissionState;
+        setPermission(initialState);
+        const { device, os } = getDeviceInfo();
+
+        // 1. 홈 화면 첫 진입 시 → 자동으로 권한 요청 팝업 노출
+        if (initialState === "prompt") {
+          trackEvent("LOCATION_PERMISSION_REQUESTED", {
+            screen_name: getScreenName(location.pathname),
+          });
+        }
 
         // 권한 변경 이벤트 등록
         status.onchange = () => {
-          setPermission(status.state as PermissionState);
+          const newState = status.state as PermissionState;
+          setPermission(newState);
+
+          if (newState === "granted") {
+            trackEvent("LOCATION_PERMISSION_GRANTED", { device, os });
+          } else if (newState === "denied") {
+            trackEvent("LOCATION_PERMISSION_DENIED", { device, os });
+          }
         };
       })
       .catch(() => {

@@ -6,6 +6,7 @@ import MeButton from "@/components/userLocationControl/MeButton";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { useLocation } from "react-router-dom";
 import type { LatLng } from "@/types/geolocation.type";
+import useMapTracking from "@/hooks/useMapTracking";
 
 // 위치권한 있을때만 보여지는 컴포넌트
 const UserLocationControl = ({
@@ -21,6 +22,10 @@ const UserLocationControl = ({
 
   const location = useLocation();
   const kakaoMap = useContext(KakaoMapContext);
+
+  useMapTracking(kakaoMap, {
+    onFollowingEnd: () => setIsFollowing(false), // 🔹 여기서 자동추적 off
+  });
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
@@ -39,15 +44,6 @@ const UserLocationControl = ({
     setIsFollowing(true);
     kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
   };
-
-  useEffect(() => {
-    window.kakao.maps.event.addListener(kakaoMap, "dragstart", () => {
-      setIsFollowing(false);
-    });
-    window.kakao.maps.event.addListener(kakaoMap, "zoom_changed", () => {
-      setIsFollowing(false);
-    });
-  }, [kakaoMap]);
 
   useEffect(() => {
     // 길찾기 화면인 경우
