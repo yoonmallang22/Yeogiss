@@ -7,6 +7,7 @@ import { secondsToHMS } from "@/utils/time";
 import { metersToKilometers } from "@/utils/geo";
 import Button from "@/components/common/Button";
 import { X } from "lucide-react";
+import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
 
 /**
  * 쓰레기통 마커 클릭시 하단에 정보를 보여주는 컴포넌트
@@ -35,7 +36,7 @@ const BinInfoCard = ({
       : `${totalDistanceMeters}m`;
 
   return (
-    <div className="w-[97%] rounded-2xl shadow-md bg-white p-5 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black">
+    <BottomCardWithMeBtnFloat>
       {/* 닫기 버튼 */}
       {onClose && (
         <button
@@ -91,7 +92,7 @@ const BinInfoCard = ({
           </Button>
         )}
       </div>
-    </div>
+    </BottomCardWithMeBtnFloat>
   );
 };
 

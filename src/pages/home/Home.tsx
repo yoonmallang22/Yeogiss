@@ -21,9 +21,7 @@ const Home = () => {
   const kakaoMap = useContext(KakaoMapContext);
   const userLocation = useUserLocation();
   const navigate = useNavigate();
-  const { setIsLocationButtonFloat, setIsFollowing } = useContext(
-    UserLocationControlContext,
-  );
+  const { setIsFollowing } = useContext(UserLocationControlContext);
 
   const { data: binsData } = useNearbyBins(
     userLocation
@@ -40,15 +38,6 @@ const Home = () => {
       setBins(binsData);
     }
   }, [binsData]);
-
-  // 선택된 쓰레기통이 있으면 위치 버튼 띄우는 상태 변경.
-  useEffect(() => {
-    if (selectedBin) {
-      setIsLocationButtonFloat(true);
-    } else {
-      setIsLocationButtonFloat(false);
-    }
-  }, [selectedBin, setIsLocationButtonFloat]);
 
   // 선택된 쓰레기통이 길찾기 가능한 거리 내에 없으면 토스트 메시지 처리
   useEffect(() => {
@@ -77,6 +66,25 @@ const Home = () => {
     setSelectedBin(null);
   };
 
+  // 접속시 서울에서 벗어나면 토스트 메시지 처리
+  useEffect(() => {
+    if (userLocation) {
+      const geocoder = new kakao.maps.services.Geocoder();
+      geocoder.coord2RegionCode(
+        userLocation.lng,
+        userLocation.lat,
+        (result, status) => {
+          if (status === kakao.maps.services.Status.OK) {
+            const region = result[0].region_1depth_name;
+            if (region !== "서울특별시") {
+              toast("⚠ 현재는 서울시 쓰레기통 위치 정보만 지원돼요.");
+            }
+          }
+        },
+      );
+    }
+  }, [userLocation]);
+
   // 유저가 위치 권한 거부한 경우 렌더링 X
   if (!userLocation) return null;
 
@@ -88,7 +96,6 @@ const Home = () => {
           setBins(bins);
         }}
       />
-
       <BinMarkers
         bins={bins}
         onBinClick={(bin) => {
@@ -113,7 +120,7 @@ const Home = () => {
         }}
         selectedId={selectedBin?.binId}
       />
-
+      
       {/* 선택된 쓰레기통이 있으면 정보 카드 컴포넌트 렌더링 */}
       {selectedBin && (
         <BinInfoCard
