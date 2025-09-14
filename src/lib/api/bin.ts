@@ -47,8 +47,9 @@ export const getBinById: GetBinById = async ({
   currentLat,
   currentLng,
 }) => {
-  const response = await axiosInstance.get(ENDPOINTS.GET_BIN(binId), {
-    params: { currentLat, currentLng },
-  });
+  console.log(ENDPOINTS.GET_BIN({ binId, currentLat, currentLng }));
+  const response = await axiosInstance.get(
+    ENDPOINTS.GET_BIN({ binId, currentLat, currentLng }),
+  );
   return response.data;
 };
