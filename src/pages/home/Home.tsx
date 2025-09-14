@@ -28,7 +28,6 @@ const Home = () => {
       ? [userLocation.lat, userLocation.lng]
       : [DEFAULT_POSITION.lat, DEFAULT_POSITION.lng],
     {
-      enabled: false,
       refetchOnWindowFocus: false,
     },
   );
@@ -120,7 +119,7 @@ const Home = () => {
         }}
         selectedId={selectedBin?.binId}
       />
-      
+
       {/* 선택된 쓰레기통이 있으면 정보 카드 컴포넌트 렌더링 */}
       {selectedBin && (
         <BinInfoCard
