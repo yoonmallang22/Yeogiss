@@ -7,25 +7,28 @@ import { secondsToHMS } from "@/utils/time";
 import { metersToKilometers } from "@/utils/geo";
 import Button from "@/components/common/Button";
 
+// TODO: isArrived 상태로.. 조건부 렌더링
+
 /**
  * 쓰레기통 마커 클릭시 하단에 정보를 보여주는 컴포넌트
  */
 const BinInfoCard = ({
   info: { bin, arrivedSeconds, totalDistanceMeters },
+  isDirectionAvailable = true,
   showDirectionBtn = false,
   directionBtnClick,
 }: {
   info: {
     bin: Bin;
-    arrivedSeconds: number;
+    arrivedSeconds?: number;
     totalDistanceMeters: number;
   };
+  isDirectionAvailable?: boolean;
   showDirectionBtn?: boolean;
   directionBtnClick?: (latlng: LatLng) => void;
 }) => {
-  if (bin && (!arrivedSeconds || !totalDistanceMeters)) return <Skeleton />;
+  if (bin && !totalDistanceMeters) return <Skeleton />;
 
-  const [hour, minute, seconds] = secondsToHMS(arrivedSeconds);
   const totalDistance =
     totalDistanceMeters >= 1000
       ? `${metersToKilometers(totalDistanceMeters)}km`
@@ -48,24 +51,28 @@ const BinInfoCard = ({
         <span>{bin.roadAddress}</span>
       </div>
 
-      {/* 시간/거리 + 버튼 */}
       <div className="flex items-center justify-between mt-2">
-        {/* 시간 & 거리 */}
         <div className="flex items-center gap-2">
           <img className="w-8 h-8" src={walkImage} />
           <div>
-            <p className="font-medium">
-              {hour ? `${hour}시간 ` : ""}
-              {minute ? `${minute}분 ` : ""}
-              {hour <= 0 && seconds ? `${seconds}초` : ""} 후 도착
-            </p>
+            {arrivedSeconds &&
+              (() => {
+                const [hour, minute, seconds] = secondsToHMS(arrivedSeconds);
+                return (
+                  <p className="font-medium">
+                    {hour ? `${hour}시간 ` : ""}
+                    {minute ? `${minute}분 ` : ""}
+                    {hour! <= 0 && seconds ? `${seconds}초` : ""} 후 도착
+                  </p>
+                );
+              })()}
             <p className="text-xs font-light">총 거리 {totalDistance}</p>
           </div>
         </div>
-
         {/* 버튼 */}
         {showDirectionBtn && (
           <Button
+            variant={isDirectionAvailable ? "primary" : "disabled"}
             onClick={() => {
               if (directionBtnClick)
                 directionBtnClick({ lat: bin.lat, lng: bin.lng });
