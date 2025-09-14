@@ -20,13 +20,16 @@ const LoadBinsButton = ({
   const kakaoMap = useContext(KakaoMapContext);
   // 이전 지도 중심에 대한 좌표를 기억한다.
   const lastCenterRef = useRef<kakao.maps.LatLng | null>(null);
+  // 이전 지도 줌 레벨을 기억한다.
+  const lastZoomRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!kakaoMap) return;
     lastCenterRef.current = kakaoMap.getCenter();
+    lastZoomRef.current = kakaoMap.getLevel();
 
-    // 드래그 이벤트: 캐싱된 중심 값에서 몇 m 이동했는지 체크하고, 임계치를 초과하면 화면에 표시
-    window.kakao.maps.event.addListener(kakaoMap, "idle", () => {
+    // 중심 이동 감지 (idle)
+    const onIdle = () => {
       const newCenter = kakaoMap.getCenter();
       const prevCenter = lastCenterRef.current;
 
@@ -35,18 +38,38 @@ const LoadBinsButton = ({
         return;
       }
 
-      // 거리 계산 (m 단위)
-      const line = new kakao.maps.Polyline({
-        path: [prevCenter, newCenter],
-      });
+      const line = new kakao.maps.Polyline({ path: [prevCenter, newCenter] });
       const distance = line.getLength();
 
       if (distance >= showThreshold) {
         setShow(true);
-      } else {
-        setShow(false);
+        // 기준 좌표 갱신
+        lastCenterRef.current = newCenter;
       }
-    });
+    };
+
+    window.kakao.maps.event.addListener(kakaoMap, "idle", onIdle);
+
+    // 줌 변경 감지
+    const onZoomChanged = () => {
+      setShow(true); // 무조건 버튼 표시
+      lastZoomRef.current = kakaoMap.getLevel();
+    };
+    window.kakao.maps.event.addListener(
+      kakaoMap,
+      "zoom_changed",
+      onZoomChanged,
+    );
+
+    return () => {
+      if (!kakaoMap) return;
+      window.kakao.maps.event.removeListener(kakaoMap, "idle", () => {});
+      window.kakao.maps.event.removeListener(
+        kakaoMap,
+        "zoom_changed",
+        () => {},
+      );
+    };
   }, [kakaoMap, showThreshold]);
 
   if (!show) return null;

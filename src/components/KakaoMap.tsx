@@ -11,8 +11,6 @@ const KakaoMap = () => {
   const center = useUserLocationOnce();
   const userLocation = useUserLocation();
 
-  console.log(center);
-
   if (center === null || userLocation === null) {
     return <Map center={DEFAULT_POSITION} className="w-full h-screen" />;
   }

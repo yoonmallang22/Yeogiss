@@ -18,8 +18,9 @@ const UserLocationControl = ({
 }) => {
   // home 진입시 자동 추적 on
   const [isFollowing, setIsFollowing] = useState(true);
-  const [isLocationButtonFloat, setIsLocationButtonFloat] = useState(false);
-
+  const [isLocationButtonFloat, setLocationButtonFloat] = useState(false);
+  // 하단으로부터 MeButton을 몇 px 띄울지
+  const [float, setFloat] = useState(0);
   const location = useLocation();
   const kakaoMap = useContext(KakaoMapContext);
 
@@ -48,18 +49,32 @@ const UserLocationControl = ({
   useEffect(() => {
     // 길찾기 화면인 경우
     if (location.pathname === "/directions") {
-      setIsLocationButtonFloat(true); // 항상 버튼이 float
+      setLocationButtonFloat(true); // 항상 버튼이 float
       setIsFollowing(false); // 내 위치 추적 off
     }
-  }, [location, setIsLocationButtonFloat]);
+  }, [location, setLocationButtonFloat]);
+
+  // 내 위치 버튼을 띄우는 함수
+  const floatMeButton = (bottom:number) => {
+    setLocationButtonFloat(true);
+    setFloat(bottom);
+  };
+
+  // 내 위치 버튼을 원래 위치로 옮기는 함수
+  const unfloatMeButton = () => {
+    setLocationButtonFloat(false);
+    setFloat(0);
+  };
 
   return (
     <UserLocationControlContext.Provider
       value={{
         isFollowing,
         setIsFollowing,
+        float,
         isLocationButtonFloat,
-        setIsLocationButtonFloat,
+        floatMeButton,
+        unfloatMeButton,
       }}
     >
       {userLocation && <MyMarker myLocation={userLocation} />}

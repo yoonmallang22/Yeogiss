@@ -28,3 +28,27 @@ export const getNearbyBins: GetNearByBins = async (lat, lng, radiusMeters) => {
 
   return response.data;
 };
+
+export type GetBinById = ({
+  binId,
+  currentLat,
+  currentLng,
+}: {
+  binId: number;
+  currentLat: number;
+  currentLng: number;
+}) => Promise<ApiResponse<Bin>>;
+
+/**
+ * 쓰레기통 ID로 쓰레기통 정보를 가져오는 함수
+ */
+export const getBinById: GetBinById = async ({
+  binId,
+  currentLat,
+  currentLng,
+}) => {
+  const response = await axiosInstance.get(
+    ENDPOINTS.GET_BIN({ binId, currentLat, currentLng }),
+  );
+  return response.data;
+};

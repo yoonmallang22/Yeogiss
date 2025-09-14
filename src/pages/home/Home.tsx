@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import useUserLocation from "@/hooks/useUserLocation";
 import { DEFAULT_POSITION } from "@/constants/geo";
-import type { Bin } from "@/lib/api/bin";
+import { getBinById, type Bin } from "@/lib/api/bin";
 import useNearbyBins from "@/hooks/useNearbyBins";
 import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
@@ -9,30 +9,26 @@ import BinInfoCard from "@/pages/home/components/BinInfoCard";
 import { useNavigate } from "react-router-dom";
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
-import fetchRoutes, { type GetRoutesParams } from "@/lib/api/routes";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
+import { toast } from "react-toastify";
+
+const DIRECTION_MAX_DISTANCE_METERS = 500;
 
 const Home = () => {
   const [bins, setBins] = useState<Bin[]>([]);
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
-  const [routesData, setRoutesData] = useState<{
-    estimatedTimeSeconds: number;
-    totalDistanceMeters: number;
-  }>({ estimatedTimeSeconds: 0, totalDistanceMeters: 0 });
-
   const kakaoMap = useContext(KakaoMapContext);
   const userLocation = useUserLocation();
   const navigate = useNavigate();
-  const { setIsLocationButtonFloat, setIsFollowing } = useContext(
-    UserLocationControlContext,
-  );
+  const { setIsFollowing } = useContext(UserLocationControlContext);
 
   const { data: binsData } = useNearbyBins(
     userLocation
       ? [userLocation.lat, userLocation.lng]
       : [DEFAULT_POSITION.lat, DEFAULT_POSITION.lng],
     {
+      enabled: false,
       refetchOnWindowFocus: false,
     },
   );
@@ -43,23 +39,51 @@ const Home = () => {
     }
   }, [binsData]);
 
+  // 선택된 쓰레기통이 길찾기 가능한 거리 내에 없으면 토스트 메시지 처리
   useEffect(() => {
-    if (selectedBin) {
-      setIsLocationButtonFloat(true);
-    } else {
-      setIsLocationButtonFloat(false);
+    if (
+      toast.isActive("direction-unavailable") === false &&
+      selectedBin &&
+      selectedBin.distanceMeters > DIRECTION_MAX_DISTANCE_METERS
+    ) {
+      toast("⚠ 가까운 위치(500m 이내)에서만 길 안내가 제공돼요.", {
+        toastId: "direction-unavailable",
+      });
     }
-  }, [selectedBin, setIsLocationButtonFloat]);
+  }, [selectedBin]);
 
+  // 지도 클릭시 선택된 쓰레기통 초기화
   useEffect(() => {
     window.kakao.maps.event.addListener(kakaoMap, "click", clearBinStates);
-  });
+
+    return () => {
+      window.kakao.maps.event.removeListener(kakaoMap, "click", clearBinStates);
+    };
+  }, [kakaoMap]);
 
   // 쓰레기통 관련 상태를 초기화
   const clearBinStates = () => {
     setSelectedBin(null);
-    setRoutesData({ estimatedTimeSeconds: 0, totalDistanceMeters: 0 });
   };
+
+  // 접속시 서울에서 벗어나면 토스트 메시지 처리
+  useEffect(() => {
+    if (userLocation) {
+      const geocoder = new kakao.maps.services.Geocoder();
+      geocoder.coord2RegionCode(
+        userLocation.lng,
+        userLocation.lat,
+        (result, status) => {
+          if (status === kakao.maps.services.Status.OK) {
+            const region = result[0].region_1depth_name;
+            if (region !== "서울특별시") {
+              toast("⚠ 현재는 서울시 쓰레기통 위치 정보만 지원돼요.");
+            }
+          }
+        },
+      );
+    }
+  }, [userLocation]);
 
   // 유저가 위치 권한 거부한 경우 렌더링 X
   if (!userLocation) return null;
@@ -67,57 +91,50 @@ const Home = () => {
   return (
     <>
       {/* 현재 위치에서 쓰레기통 찾기 버튼 */}
-      <LoadBinsButton onLoaded={(bins) => setBins(bins)} />
-
+      <LoadBinsButton
+        onLoaded={(bins) => {
+          setBins(bins);
+        }}
+      />
       <BinMarkers
         bins={bins}
         onBinClick={(bin) => {
-          clearBinStates();
-          setSelectedBin(bin);
-          setIsFollowing(false);
-          if (userLocation) {
-            const params: GetRoutesParams = {
-              startLat: userLocation.lat,
-              startLng: userLocation.lng,
-              endLat: bin.lat,
-              endLng: bin.lng,
-              startName: "start",
-              endName: "end",
-            };
-            fetchRoutes(params).then((response) => {
-              const { estimatedTimeSeconds, totalDistanceMeters } =
-                response.data;
-              setRoutesData({ estimatedTimeSeconds, totalDistanceMeters });
-            });
-          }
-
           trackEvent("TRASH_BIN_MARKER_CLICKED", {
             method: "click",
             marker_id: selectedBin?.binId,
             marker_type: selectedBin?.type,
             screen_name: getScreenName(location.pathname),
           });
+
+          if (!userLocation) return;
+          clearBinStates();
+          setIsFollowing(false);
+
+          getBinById({
+            binId: bin.binId,
+            currentLat: userLocation.lat,
+            currentLng: userLocation.lng,
+          }).then((response) => {
+            setSelectedBin(response.data);
+          });
         }}
         selectedId={selectedBin?.binId}
       />
-
+      
       {/* 선택된 쓰레기통이 있으면 정보 카드 컴포넌트 렌더링 */}
       {selectedBin && (
         <BinInfoCard
           info={{
             bin: selectedBin,
-            arrivedSeconds: routesData.estimatedTimeSeconds,
-            totalDistanceMeters: routesData.totalDistanceMeters,
+            totalDistanceMeters: selectedBin.distanceMeters,
           }}
-          showDirectionBtn={true}
+          isDirectionAvailable={
+            selectedBin.distanceMeters <= DIRECTION_MAX_DISTANCE_METERS
+          }
+          onClose={clearBinStates}
           directionBtnClick={() => {
             navigate("/directions", {
-              state: {
-                userLocation,
-                selectedBin,
-                arrivedSeconds: routesData.estimatedTimeSeconds,
-                totalDistanceMeters: routesData.totalDistanceMeters,
-              },
+              state: { userLocation, selectedBin },
             });
 
             trackEvent("ROUTE_SEARCH_INITIATED", {

@@ -30,11 +30,11 @@ const FollowIcon = ({ color }: { color: string }) => (
 
 const MeButton = ({ onClick, isFollowing }: MeButtonProps) => {
   const strokeColor = isFollowing ? "#00B94E" : "#A5A5A5";
-  const { isLocationButtonFloat } = useContext(UserLocationControlContext);
-
+  const { float } = useContext(UserLocationControlContext);
   return (
     <button
-      className={`absolute ${isLocationButtonFloat ? "bottom-46" : "bottom-7.5"} left-2.5 z-[1000] cursor-pointer`}
+      className={`absolute left-2.5 z-[1000] cursor-pointer`}
+      style={{ bottom: 30 + float }}
       onClick={() => {
         onClick();
 
