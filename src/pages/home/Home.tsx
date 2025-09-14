@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from "react";
-import useUserLocation from "@/hooks/useUserLocation";
 import { getBinById, getNearbyBins, type Bin } from "@/lib/api/bin";
 import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
@@ -19,9 +18,10 @@ const Home = () => {
   const [bins, setBins] = useState<Bin[]>([]);
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
   const kakaoMap = useContext(KakaoMapContext);
-  const userLocation = useUserLocation();
   const navigate = useNavigate();
-  const { setIsFollowing } = useContext(UserLocationControlContext);
+  const { setIsFollowing, userLocation } = useContext(
+    UserLocationControlContext,
+  );
 
   useEffect(() => {
     // 초기 로드 (마운트 시 1회만 실행)

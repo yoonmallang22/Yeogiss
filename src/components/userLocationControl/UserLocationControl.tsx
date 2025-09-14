@@ -55,7 +55,7 @@ const UserLocationControl = ({
   }, [location, setLocationButtonFloat]);
 
   // 내 위치 버튼을 띄우는 함수
-  const floatMeButton = (bottom:number) => {
+  const floatMeButton = (bottom: number) => {
     setLocationButtonFloat(true);
     setFloat(bottom);
   };
@@ -69,6 +69,7 @@ const UserLocationControl = ({
   return (
     <UserLocationControlContext.Provider
       value={{
+        userLocation,
         isFollowing,
         setIsFollowing,
         float,
