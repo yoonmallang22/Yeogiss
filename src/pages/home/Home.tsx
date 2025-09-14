@@ -11,15 +11,13 @@ import { UserLocationControlContext } from "@/components/userLocationControl/Use
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
+import { toast } from "react-toastify";
+
+const DIRECTION_MAX_DISTANCE_METERS = 500;
 
 const Home = () => {
   const [bins, setBins] = useState<Bin[]>([]);
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
-  const [routesData, setRoutesData] = useState<{
-    estimatedTimeSeconds: number;
-    totalDistanceMeters: number;
-  }>({ estimatedTimeSeconds: 0, totalDistanceMeters: 0 });
-
   const kakaoMap = useContext(KakaoMapContext);
   const userLocation = useUserLocation();
   const navigate = useNavigate();
@@ -32,6 +30,7 @@ const Home = () => {
       ? [userLocation.lat, userLocation.lng]
       : [DEFAULT_POSITION.lat, DEFAULT_POSITION.lng],
     {
+      enabled: false,
       refetchOnWindowFocus: false,
     },
   );
@@ -42,6 +41,7 @@ const Home = () => {
     }
   }, [binsData]);
 
+  // 선택된 쓰레기통이 있으면 위치 버튼 띄우는 상태 변경.
   useEffect(() => {
     if (selectedBin) {
       setIsLocationButtonFloat(true);
@@ -50,14 +50,32 @@ const Home = () => {
     }
   }, [selectedBin, setIsLocationButtonFloat]);
 
+  // 선택된 쓰레기통이 길찾기 가능한 거리 내에 없으면 토스트 메시지 처리
+  useEffect(() => {
+    console.log(selectedBin?.distanceMeters);
+    if (
+      toast.isActive("direction-unavailable") === false &&
+      selectedBin &&
+      selectedBin.distanceMeters > DIRECTION_MAX_DISTANCE_METERS
+    ) {
+      toast("⚠ 가까운 위치(500m 이내)에서만 길 안내가 제공돼요.", {
+        toastId: "direction-unavailable",
+      });
+    }
+  }, [selectedBin]);
+
+  // 지도 클릭시 선택된 쓰레기통 초기화
   useEffect(() => {
     window.kakao.maps.event.addListener(kakaoMap, "click", clearBinStates);
-  });
+
+    return () => {
+      window.kakao.maps.event.removeListener(kakaoMap, "click", clearBinStates);
+    };
+  }, [kakaoMap]);
 
   // 쓰레기통 관련 상태를 초기화
   const clearBinStates = () => {
     setSelectedBin(null);
-    setRoutesData({ estimatedTimeSeconds: 0, totalDistanceMeters: 0 });
   };
 
   // 유저가 위치 권한 거부한 경우 렌더링 X
@@ -66,7 +84,11 @@ const Home = () => {
   return (
     <>
       {/* 현재 위치에서 쓰레기통 찾기 버튼 */}
-      <LoadBinsButton onLoaded={(bins) => setBins(bins)} />
+      <LoadBinsButton
+        onLoaded={(bins) => {
+          setBins(bins);
+        }}
+      />
 
       <BinMarkers
         bins={bins}
@@ -80,7 +102,6 @@ const Home = () => {
 
           if (!userLocation) return;
           clearBinStates();
-          setSelectedBin(bin);
           setIsFollowing(false);
 
           getBinById({
@@ -99,18 +120,15 @@ const Home = () => {
         <BinInfoCard
           info={{
             bin: selectedBin,
-            arrivedSeconds: routesData.estimatedTimeSeconds,
-            totalDistanceMeters: routesData.totalDistanceMeters,
+            totalDistanceMeters: selectedBin.distanceMeters,
           }}
+          isDirectionAvailable={
+            selectedBin.distanceMeters <= DIRECTION_MAX_DISTANCE_METERS
+          }
           showDirectionBtn={true}
           directionBtnClick={() => {
             navigate("/directions", {
-              state: {
-                userLocation,
-                selectedBin,
-                arrivedSeconds: routesData.estimatedTimeSeconds,
-                totalDistanceMeters: routesData.totalDistanceMeters,
-              },
+              state: { userLocation, selectedBin },
             });
 
             trackEvent("ROUTE_SEARCH_INITIATED", {
