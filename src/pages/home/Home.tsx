@@ -1,8 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import useUserLocation from "@/hooks/useUserLocation";
-import { DEFAULT_POSITION } from "@/constants/geo";
-import { getBinById, type Bin } from "@/lib/api/bin";
-import useNearbyBins from "@/hooks/useNearbyBins";
+import { getBinById, getNearbyBins, type Bin } from "@/lib/api/bin";
 import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
 import BinInfoCard from "@/pages/home/components/BinInfoCard";
@@ -16,28 +13,27 @@ import { toast } from "react-toastify";
 const DIRECTION_MAX_DISTANCE_METERS = 500;
 
 const Home = () => {
+  // 최초 로드 여부
+  const [loaded, setLoaded] = useState(false);
   const [bins, setBins] = useState<Bin[]>([]);
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
   const kakaoMap = useContext(KakaoMapContext);
-  const userLocation = useUserLocation();
   const navigate = useNavigate();
-  const { setIsFollowing } = useContext(UserLocationControlContext);
-
-  const { data: binsData } = useNearbyBins(
-    userLocation
-      ? [userLocation.lat, userLocation.lng]
-      : [DEFAULT_POSITION.lat, DEFAULT_POSITION.lng],
-    {
-      enabled: false,
-      refetchOnWindowFocus: false,
-    },
+  const { setIsFollowing, userLocation } = useContext(
+    UserLocationControlContext,
   );
 
   useEffect(() => {
-    if (binsData) {
-      setBins(binsData);
-    }
-  }, [binsData]);
+    // 초기 로드 (마운트 시 1회만 실행)
+    if (!kakaoMap || !userLocation || loaded) return;
+
+    getNearbyBins(userLocation.lat, userLocation.lng).then((response) => {
+      if (response.data.length) {
+        setBins(response.data);
+      }
+      setLoaded(true);
+    });
+  }, [userLocation, loaded, kakaoMap]);
 
   // 선택된 쓰레기통이 길찾기 가능한 거리 내에 없으면 토스트 메시지 처리
   useEffect(() => {
@@ -120,7 +116,7 @@ const Home = () => {
         }}
         selectedId={selectedBin?.binId}
       />
-      
+
       {/* 선택된 쓰레기통이 있으면 정보 카드 컴포넌트 렌더링 */}
       {selectedBin && (
         <BinInfoCard

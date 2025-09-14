@@ -1,6 +1,9 @@
+import type { LatLng } from "@/types/geolocation.type";
 import { createContext } from "react";
 
 type TUserLocationControlContext = {
+  userLocation: LatLng | null;
+
   isFollowing: boolean;
   setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -15,6 +18,8 @@ type TUserLocationControlContext = {
 
 export const UserLocationControlContext =
   createContext<TUserLocationControlContext>({
+    userLocation: null,
+
     isFollowing: false,
     setIsFollowing: () => {},
 

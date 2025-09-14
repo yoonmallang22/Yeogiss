@@ -8,8 +8,10 @@ import { useContext, useEffect, useRef } from "react";
  */
 const BottomCardWithMeBtnFloat = ({
   children,
+  onClose,
 }: {
   children: React.ReactNode;
+  onClose?: () => void;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { floatMeButton, unfloatMeButton } = useContext(
@@ -25,7 +27,11 @@ const BottomCardWithMeBtnFloat = ({
     };
   }, [floatMeButton, unfloatMeButton]);
 
-  return <BottomCard ref={ref}>{children}</BottomCard>;
+  return (
+    <BottomCard ref={ref} onClose={onClose}>
+      {children}
+    </BottomCard>
+  );
 };
 
 export default BottomCardWithMeBtnFloat;
