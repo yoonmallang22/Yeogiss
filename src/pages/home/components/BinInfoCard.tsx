@@ -6,8 +6,7 @@ import type { LatLng } from "@/types/geolocation.type";
 import { secondsToHMS } from "@/utils/time";
 import { metersToKilometers } from "@/utils/geo";
 import Button from "@/components/common/Button";
-
-// TODO: isArrived 상태로.. 조건부 렌더링
+import { X } from "lucide-react";
 
 /**
  * 쓰레기통 마커 클릭시 하단에 정보를 보여주는 컴포넌트
@@ -15,8 +14,8 @@ import Button from "@/components/common/Button";
 const BinInfoCard = ({
   info: { bin, arrivedSeconds, totalDistanceMeters },
   isDirectionAvailable = true,
-  showDirectionBtn = false,
   directionBtnClick,
+  onClose,
 }: {
   info: {
     bin: Bin;
@@ -26,6 +25,7 @@ const BinInfoCard = ({
   isDirectionAvailable?: boolean;
   showDirectionBtn?: boolean;
   directionBtnClick?: (latlng: LatLng) => void;
+  onClose?: () => void;
 }) => {
   if (bin && !totalDistanceMeters) return <Skeleton />;
 
@@ -36,6 +36,16 @@ const BinInfoCard = ({
 
   return (
     <div className="w-[97%] rounded-2xl shadow-md bg-white p-5 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black">
+      {/* 닫기 버튼 */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100"
+        >
+          <X className="w-5 h-5 text-gray-500" />
+        </button>
+      )}
+
       {/* 위치명 */}
       <p className="font-medium text-base truncate">
         {bin.detailAddress ? bin.detailAddress : "쓰레기통(정보 없음)"}
@@ -70,12 +80,11 @@ const BinInfoCard = ({
           </div>
         </div>
         {/* 버튼 */}
-        {showDirectionBtn && (
+        {directionBtnClick && (
           <Button
             variant={isDirectionAvailable ? "primary" : "disabled"}
             onClick={() => {
-              if (directionBtnClick)
-                directionBtnClick({ lat: bin.lat, lng: bin.lng });
+              directionBtnClick({ lat: bin.lat, lng: bin.lng });
             }}
           >
             길 안내

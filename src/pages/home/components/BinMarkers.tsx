@@ -36,27 +36,28 @@ const BinMarkers = ({
 }) => {
   const kakaoMap = useContext(KakaoMapContext);
 
+  if (bins.length === 0) return null;
+
   return (
     <>
-      {bins.length &&
-        bins.map((bin) => {
-          return (
-            <MapMarker
-              key={bin.binId}
-              position={{ lat: bin.lat, lng: bin.lng }}
-              clickable={true}
-              image={selectedId === bin.binId ? IMAGE.selected : IMAGE.regular}
-              onClick={() => {
-                if (onBinClick) {
-                  onBinClick(bin);
-                }
-                if (moveToSelected) {
-                  kakaoMap.panTo(new kakao.maps.LatLng(bin.lat, bin.lng));
-                }
-              }}
-            />
-          );
-        })}
+      {bins.map((bin) => {
+        return (
+          <MapMarker
+            key={bin.binId}
+            position={{ lat: bin.lat, lng: bin.lng }}
+            clickable={true}
+            image={selectedId === bin.binId ? IMAGE.selected : IMAGE.regular}
+            onClick={() => {
+              if (onBinClick) {
+                onBinClick(bin);
+              }
+              if (moveToSelected) {
+                kakaoMap.panTo(new kakao.maps.LatLng(bin.lat, bin.lng));
+              }
+            }}
+          />
+        );
+      })}
     </>
   );
 };

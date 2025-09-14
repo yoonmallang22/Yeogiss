@@ -52,7 +52,6 @@ const Home = () => {
 
   // 선택된 쓰레기통이 길찾기 가능한 거리 내에 없으면 토스트 메시지 처리
   useEffect(() => {
-    console.log(selectedBin?.distanceMeters);
     if (
       toast.isActive("direction-unavailable") === false &&
       selectedBin &&
@@ -125,7 +124,7 @@ const Home = () => {
           isDirectionAvailable={
             selectedBin.distanceMeters <= DIRECTION_MAX_DISTANCE_METERS
           }
-          showDirectionBtn={true}
+          onClose={clearBinStates}
           directionBtnClick={() => {
             navigate("/directions", {
               state: { userLocation, selectedBin },
