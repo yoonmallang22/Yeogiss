@@ -9,10 +9,11 @@ import { useContext, useEffect, useRef } from "react";
 const BottomCardWithMeBtnFloat = ({
   children,
   onClose,
+  ...rest
 }: {
   children: React.ReactNode;
   onClose?: () => void;
-}) => {
+} & React.HTMLAttributes<HTMLDivElement>) => {
   const ref = useRef<HTMLDivElement>(null);
   const { floatMeButton, unfloatMeButton } = useContext(
     UserLocationControlContext,
@@ -28,7 +29,7 @@ const BottomCardWithMeBtnFloat = ({
   }, [floatMeButton, unfloatMeButton]);
 
   return (
-    <BottomCard ref={ref} onClose={onClose}>
+    <BottomCard ref={ref} onClose={onClose} {...rest}>
       {children}
     </BottomCard>
   );

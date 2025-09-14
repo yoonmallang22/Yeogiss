@@ -56,7 +56,7 @@ const Direction = () => {
       {userLocation && (
         <RouteMap start={userLocation} end={destination} path={path} />
       )}
-      {!arrived ? (
+      {arrived ? (
         <BinInfoCard
           info={{
             bin: selectedBin,
@@ -72,7 +72,7 @@ const Direction = () => {
           onClose={() => {
             navigate("/");
           }}
-          className="py-6 flex flex-col items-center justify-center "
+          className="flex flex-col items-center justify-center"
         >
           <span>목적지에 도착했어요!</span>
           <span>안내를 종료할게요.</span>
