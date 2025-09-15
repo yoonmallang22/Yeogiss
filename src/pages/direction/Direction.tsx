@@ -65,7 +65,7 @@ const Direction = () => {
       {userLocation && (
         <RouteMap start={userLocation} end={destination} path={path} />
       )}
-      {arrived ? (
+      {!arrived ? (
         <BinInfoCard
           info={{
             bin: selectedBin,
