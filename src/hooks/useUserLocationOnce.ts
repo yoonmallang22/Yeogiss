@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import type { LatLng } from "@/types/geolocation.type";
+import useGeoPermission from "@/hooks/useGeoPermission";
 
 const useUserLocationOnce = (options?: PositionOptions): LatLng | null => {
   const [position, setPosition] = useState<LatLng | null>(null);
+  const permission = useGeoPermission();
 
   useEffect(() => {
+    if (permission !== "granted") return;
+
     if (!navigator.geolocation) {
       setPosition(null);
       return;
@@ -28,7 +32,7 @@ const useUserLocationOnce = (options?: PositionOptions): LatLng | null => {
         ...options,
       },
     );
-  }, [options]);
+  }, [permission, options]);
 
   return position;
 };
