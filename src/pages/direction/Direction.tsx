@@ -6,6 +6,7 @@ import { getDistance } from "@/utils/geo";
 import RouteMap from "@/pages/direction/components/RouteMap";
 import BinInfoCard from "@/pages/home/components/BinInfoCard";
 import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
+import { trackEvent } from "@/lib/trackEvent";
 
 const ARRIVAL_THRESHOLD = 5;
 
@@ -51,6 +52,14 @@ const Direction = () => {
     }
   }, [userLocation, destination, arrived]);
 
+  if (arrived) {
+    trackEvent("ROUTE_SEARCH_COMPLETED", {
+      event: "arrival",
+      route_distance: totalDistanceMeters,
+      route_duration: estimatedTimeSeconds,
+    });
+  }
+
   return (
     <>
       {userLocation && (
@@ -65,6 +74,12 @@ const Direction = () => {
           }}
           onClose={() => {
             navigate("/");
+
+            trackEvent("ROUTE_SEARCH_COMPLETED", {
+              event: "cancel",
+              route_distance: totalDistanceMeters,
+              route_duration: estimatedTimeSeconds,
+            });
           }}
         />
       ) : (
