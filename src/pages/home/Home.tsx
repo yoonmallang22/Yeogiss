@@ -19,6 +19,7 @@ const Home = () => {
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
   const kakaoMap = useContext(KakaoMapContext);
   const navigate = useNavigate();
+
   const { setIsFollowing, userLocation } = useContext(
     UserLocationControlContext,
   );

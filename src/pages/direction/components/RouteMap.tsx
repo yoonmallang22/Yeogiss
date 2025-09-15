@@ -1,7 +1,5 @@
-import { memo, useMemo, useEffect, useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { memo, useEffect, useContext } from "react";
 import { MapMarker, Polyline, KakaoMapContext } from "react-kakao-maps-sdk";
-import fetchRoutes from "@/lib/api/routes";
 import type { LatLng } from "@/types/geolocation.type";
 import startMarkerImage from "@/assets/start-marker.svg";
 import endMarkerImage from "@/assets/end-marker.svg";
@@ -9,29 +7,15 @@ import endMarkerImage from "@/assets/end-marker.svg";
 type RouteMapProps = {
   start: LatLng;
   end: LatLng;
+  path: LatLng[];
 };
 
 const BOTTOM_INFO_HEIGHT = 150; // BinInfoCard 높이
 const CENTER_OFFSET = BOTTOM_INFO_HEIGHT / 2 - 5; // 이동할 픽셀 값
 
-const RouteMapComponent = ({ start, end }: RouteMapProps) => {
+const RouteMapComponent = ({ start, end, path }: RouteMapProps) => {
   const kakaoMap = useContext(KakaoMapContext);
 
-  const { data } = useQuery({
-    queryKey: ["routes", start, end],
-    queryFn: () =>
-      fetchRoutes({
-        startLat: start.lat,
-        startLng: start.lng,
-        endLat: end.lat,
-        endLng: end.lng,
-        startName: "startname",
-        endName: "endname",
-      }),
-    staleTime: 1000 * 60 * 10, // 10분 동안 캐싱
-  });
-
-  const path = useMemo(() => data?.data?.path ?? [], [data]);
   const positions = [
     { position: start, image: startMarkerImage },
     { position: end, image: endMarkerImage },
