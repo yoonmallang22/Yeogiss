@@ -4,6 +4,8 @@ import useGeoPermission from "@/hooks/useGeoPermission";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
 
+const GEOLOCATION_TIMEOUT_MS = 15000;
+
 const useUserLocation = (
   options?: PositionOptions,
   throttleMs: number = 1000,
@@ -48,7 +50,7 @@ const useUserLocation = (
       {
         enableHighAccuracy: true,
         maximumAge: throttleMs,
-        timeout: 5000,
+        timeout: GEOLOCATION_TIMEOUT_MS,
         ...options,
       },
     );
