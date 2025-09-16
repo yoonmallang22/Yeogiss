@@ -12,7 +12,7 @@ import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
  * 쓰레기통 마커 클릭시 하단에 정보를 보여주는 컴포넌트
  */
 const BinInfoCard = ({
-  info: { bin, arrivedSeconds, totalDistanceMeters },
+  info: { bin, arrivedSeconds },
   isDirectionAvailable = true,
   directionBtnClick,
   onClose,
@@ -20,19 +20,18 @@ const BinInfoCard = ({
   info: {
     bin: Bin;
     arrivedSeconds?: number;
-    totalDistanceMeters: number;
   };
   isDirectionAvailable?: boolean;
   showDirectionBtn?: boolean;
   directionBtnClick?: (latlng: LatLng) => void;
   onClose?: () => void;
 }) => {
-  if (bin && !totalDistanceMeters) return <Skeleton />;
+  if (bin && !bin.distanceMeters) return <Skeleton />;
 
   const totalDistance =
-    totalDistanceMeters >= 1000
-      ? `${metersToKilometers(totalDistanceMeters)}km`
-      : `${totalDistanceMeters}m`;
+    bin.distanceMeters >= 1000
+      ? `${metersToKilometers(bin.distanceMeters)}km`
+      : `${bin.distanceMeters}m`;
 
   return (
     <BottomCardWithMeBtnFloat onClose={onClose}>

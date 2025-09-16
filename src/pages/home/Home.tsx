@@ -104,7 +104,9 @@ const Home = () => {
           });
 
           if (!userLocation) return;
-          clearBinStates();
+          // 현재 사용자 위치를 기준으로 쓰레기통 정보를 보여주어야 하므로, 초기 조회한 쓰레기통 데이터의 거리 정보를 0으로 세팅
+          const tempBin: Bin = { ...bin, distanceMeters: 0 };
+          setSelectedBin(tempBin);
           setIsFollowing(false);
 
           getBinById({
@@ -123,7 +125,6 @@ const Home = () => {
         <BinInfoCard
           info={{
             bin: selectedBin,
-            totalDistanceMeters: selectedBin.distanceMeters,
           }}
           isDirectionAvailable={
             selectedBin.distanceMeters <= DIRECTION_MAX_DISTANCE_METERS
