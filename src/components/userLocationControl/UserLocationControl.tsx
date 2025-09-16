@@ -13,8 +13,8 @@ const UserLocationControl = ({
   userLocation,
   children,
 }: {
-  userLocation: LatLng;
-  children: ReactNode;
+  userLocation?: LatLng;
+  children?: ReactNode;
 }) => {
   // home 진입시 자동 추적 on
   const [isFollowing, setIsFollowing] = useState(true);
@@ -30,7 +30,7 @@ const UserLocationControl = ({
 
   /* 자동 추적 모드일 때만 사용자 위치로 중심 좌표 갱신 */
   useEffect(() => {
-    if (!isFollowing) return;
+    if (!isFollowing || !userLocation) return;
 
     kakaoMap.panTo(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
   }, [userLocation, isFollowing, kakaoMap]);
@@ -65,6 +65,9 @@ const UserLocationControl = ({
     setLocationButtonFloat(false);
     setFloat(0);
   };
+
+  // 위치권한이 없으면 내 위치 버튼만 렌더링한다.
+  if (!userLocation) return <MeButton onClick={handleMeButtonClick} isFollowing={false} />;
 
   return (
     <UserLocationControlContext.Provider
