@@ -50,9 +50,16 @@ const RouteMapComponent = ({ start, end, path }: RouteMapProps) => {
     <>
       <Polyline
         path={path}
-        strokeWeight={6}
-        strokeColor={"#2AA9A8"}
-        strokeOpacity={0.9}
+        strokeWeight={10}
+        strokeColor={"#0054AF"}
+        strokeOpacity={0.8}
+        strokeStyle={"solid"}
+      />
+      <Polyline
+        path={path}
+        strokeWeight={8}
+        strokeColor={"#007AFF"}
+        strokeOpacity={0.8}
         strokeStyle={"solid"}
       />
       {positions.map((v, i) => {
