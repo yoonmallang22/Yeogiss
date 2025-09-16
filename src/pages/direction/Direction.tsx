@@ -68,9 +68,8 @@ const Direction = () => {
       {!arrived ? (
         <BinInfoCard
           info={{
-            bin: selectedBin,
+            bin: { ...selectedBin, distanceMeters: totalDistanceMeters },
             arrivedSeconds: estimatedTimeSeconds,
-            totalDistanceMeters: totalDistanceMeters,
           }}
           onClose={() => {
             navigate("/");
