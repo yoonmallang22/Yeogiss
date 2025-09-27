@@ -93,8 +93,8 @@ const LoadBinsButton = ({
           Math.ceil(diagonal / 2),
         ).then((response) => {
           if (response.data.length === 0) {
-            toast.info(
-              "현재 위치에는 쓰레기통이 없어요. 조금만 더 걸어가 볼까요?",
+            toast(
+              "⚠ 현재 위치에는 쓰레기통이 없어요. 조금만 더 걸어가 볼까요?",
             );
           } else {
             if (onLoaded) onLoaded(response.data);
