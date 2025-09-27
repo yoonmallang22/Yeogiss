@@ -9,14 +9,19 @@ import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
 import { toast } from "react-toastify";
+import useFirstLocationGrantedEffect from "@/hooks/useFirstLocationGrantedEffect";
+import useGeoPermission from "@/hooks/useGeoPermission";
 
 const DIRECTION_MAX_DISTANCE_METERS = 500;
 
 const Home = () => {
-  // 최초 로드 여부
+  // 최초 쓰레기통의 로드 여부
   const [loaded, setLoaded] = useState(false);
+  // 쓰레기통 데이터
   const [bins, setBins] = useState<Bin[]>([]);
+  // 화면에 선택된 쓰레기통 상태
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
+  const permission = useGeoPermission();
   const kakaoMap = useContext(KakaoMapContext);
   const navigate = useNavigate();
 
@@ -24,6 +29,26 @@ const Home = () => {
     UserLocationControlContext,
   );
 
+  // 접속시 서울에서 벗어나면 토스트 메시지 처리
+  useFirstLocationGrantedEffect(permission, () => {
+    if (userLocation === null) return;
+
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2RegionCode(
+      userLocation.lng,
+      userLocation.lat,
+      (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          const region = result[0].region_1depth_name;
+          if (region !== "서울특별시") {
+            toast("⚠ 현재는 서울시 쓰레기통 위치 정보만 지원돼요.");
+          }
+        }
+      },
+    );
+  });
+
+  // 초기에 사용자 주변의 쓰레기통 정보를 불러오기 위해 loaded 상태를 사용, 1회만 실행한다.
   useEffect(() => {
     // 초기 로드 (마운트 시 1회만 실행)
     if (!kakaoMap || !userLocation || loaded) return;
@@ -62,25 +87,6 @@ const Home = () => {
   const clearBinStates = () => {
     setSelectedBin(null);
   };
-
-  // 접속시 서울에서 벗어나면 토스트 메시지 처리
-  useEffect(() => {
-    if (userLocation) {
-      const geocoder = new kakao.maps.services.Geocoder();
-      geocoder.coord2RegionCode(
-        userLocation.lng,
-        userLocation.lat,
-        (result, status) => {
-          if (status === kakao.maps.services.Status.OK) {
-            const region = result[0].region_1depth_name;
-            if (region !== "서울특별시") {
-              toast("⚠ 현재는 서울시 쓰레기통 위치 정보만 지원돼요.");
-            }
-          }
-        },
-      );
-    }
-  }, [userLocation]);
 
   // 유저가 위치 권한 거부한 경우 렌더링 X
   if (!userLocation) return null;

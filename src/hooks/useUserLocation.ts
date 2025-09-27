@@ -4,7 +4,9 @@ import useGeoPermission from "@/hooks/useGeoPermission";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
 
-const GEOLOCATION_TIMEOUT_MS = 15000;
+const GEOLOCATION_TIMEOUT_MS = 15000; // 위치 요청 타임아웃
+const MAX_RETRY = 3; // 최대 재시도 횟수
+const RETRY_DELAY = 2000; // 재시도 간격(ms)
 
 const useUserLocation = (
   options?: PositionOptions,
@@ -14,6 +16,7 @@ const useUserLocation = (
   const lastUpdateTime = useRef<number>(0);
   const watchIdRef = useRef<number | null>(null);
   const permission = useGeoPermission();
+  const retryCount = useRef<number>(0);
 
   const startWatching = useCallback(() => {
     if (!navigator.geolocation) {
@@ -21,7 +24,7 @@ const useUserLocation = (
       return;
     }
 
-    // 기존 watch 제거 후 재등록 (중복 방지)
+    // 기존 watch 제거 후 재등록
     if (watchIdRef.current !== null) {
       navigator.geolocation.clearWatch(watchIdRef.current);
     }
@@ -30,11 +33,9 @@ const useUserLocation = (
       (pos) => {
         const now = Date.now();
         if (now - lastUpdateTime.current >= throttleMs) {
-          setPosition({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
+          setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude });
           lastUpdateTime.current = now;
+          retryCount.current = 0; // 성공하면 재시도 카운트 초기화
         }
       },
       (err) => {
@@ -46,6 +47,15 @@ const useUserLocation = (
           error_message: err.message,
           screen_name: getScreenName(location.pathname),
         });
+
+        // 일시적 오류라면 재시도
+        if (retryCount.current < MAX_RETRY) {
+          console.log("위치 추적 재시도: ", retryCount.current + 1);
+          retryCount.current += 1;
+          setTimeout(() => {
+            startWatching();
+          }, RETRY_DELAY);
+        }
       },
       {
         enableHighAccuracy: true,
@@ -56,23 +66,25 @@ const useUserLocation = (
     );
   }, [options, throttleMs]);
 
-  useEffect(() => {
-    // 초기 watch 시작
-    startWatching();
+  // 초기 실행
+  useEffect(startWatching, [startWatching]);
 
+  // 권한 상태 변화에 따른 처리
+  useEffect(() => {
+    console.log("permission changed:", permission);
     if (permission === "granted") {
-      startWatching(); // 허용 시 다시 위치 추적 시작
+      startWatching();
     } else if (permission === "denied") {
+      startWatching(); // 권한이 거부되어도 위치 추적 시도
       setPosition(null);
     }
 
     return () => {
-      // 언마운트 시 watch 해제
       if (watchIdRef.current !== null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
       }
     };
-  }, [startWatching, permission]);
+  }, [permission, startWatching]);
 
   return position;
 };

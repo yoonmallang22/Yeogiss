@@ -29,7 +29,7 @@ const KakaoMap = () => {
   }
 
   return (
-    <Map center={center} className="w-full h-screen" level={3}>
+    <Map center={center} className="w-full h-dvh" level={3}>
       <UserLocationControl userLocation={userLocation}>
         <Outlet />
       </UserLocationControl>
