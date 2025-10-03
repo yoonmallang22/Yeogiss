@@ -11,47 +11,47 @@ interface MeButtonProps {
 const FollowIcon = ({ color }: { color: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="45"
-    height="45"
+    width={45}
+    height={45}
     viewBox="0 0 45 45"
     fill="none"
   >
     <g filter="url(#filter0_dd_590_1462)">
-      <rect x="3.45898" y="3" width="38" height="38" rx="19" fill="white" />
+      <rect x={3.45898} y={3} width={38} height={38} rx={19} fill="white" />
       <path
         d="M22.459 29C23.3782 29 24.2885 28.8189 25.1378 28.4672C25.987 28.1154 26.7587 27.5998 27.4087 26.9497C28.0587 26.2997 28.5744 25.5281 28.9261 24.6788C29.2779 23.8295 29.459 22.9193 29.459 22M22.459 29C20.6025 29 18.822 28.2625 17.5092 26.9497C16.1965 25.637 15.459 23.8565 15.459 22M22.459 29V31M29.459 22C29.459 21.0807 29.2779 20.1705 28.9261 19.3212C28.5744 18.4719 28.0587 17.7003 27.4087 17.0503C26.7587 16.4002 25.987 15.8846 25.1378 15.5328C24.2885 15.1811 23.3782 15 22.459 15M29.459 22H31.459M22.459 15C20.6025 15 18.822 15.7375 17.5092 17.0503C16.1965 18.363 15.459 20.1435 15.459 22M22.459 15V13M15.459 22H13.459"
         stroke={color}
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <circle
-        cx="22.4589"
-        cy="22.0001"
-        r="2.56579"
+        cx={22.4589}
+        cy={22.0001}
+        r={2.56579}
         stroke={color}
-        stroke-width="1.5"
+        strokeWidth={1.5}
       />
     </g>
     <defs>
       <filter
         id="filter0_dd_590_1462"
-        x="0.458984"
-        y="0.5"
-        width="44"
-        height="44"
+        x={0.458984}
+        y={0.5}
+        width={44}
+        height={44}
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity={0} result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
           values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
           result="hardAlpha"
         />
-        <feOffset dy="0.5" />
-        <feGaussianBlur stdDeviation="1.5" />
+        <feOffset dy={0.5} />
+        <feGaussianBlur stdDeviation={1.5} />
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix
           type="matrix"
@@ -68,8 +68,8 @@ const FollowIcon = ({ color }: { color: string }) => (
           values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
           result="hardAlpha"
         />
-        <feOffset dy="0.5" />
-        <feGaussianBlur stdDeviation="1" />
+        <feOffset dy={0.5} />
+        <feGaussianBlur stdDeviation={1} />
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix
           type="matrix"
