@@ -11,20 +11,83 @@ interface MeButtonProps {
 const FollowIcon = ({ color }: { color: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="30"
-    height="30"
-    viewBox="0 0 30 30"
+    width="45"
+    height="45"
+    viewBox="0 0 45 45"
     fill="none"
   >
-    <rect width="30" height="30" rx="15" fill="white" />
-    <path
-      d="M15 22C15.9193 22 16.8295 21.8189 17.6788 21.4672C18.5281 21.1154 19.2997 20.5998 19.9497 19.9497C20.5998 19.2997 21.1154 18.5281 21.4672 17.6788C21.8189 16.8295 22 15.9193 22 15M15 22C13.1435 22 11.363 21.2625 10.0503 19.9497C8.7375 18.637 8 16.8565 8 15M15 22V24M22 15C22 14.0807 21.8189 13.1705 21.4672 12.3212C21.1154 11.4719 20.5998 10.7003 19.9497 10.0503C19.2997 9.40024 18.5281 8.88463 17.6788 8.53284C16.8295 8.18106 15.9193 8 15 8M22 15H24M15 8C13.1435 8 11.363 8.7375 10.0503 10.0503C8.7375 11.363 8 13.1435 8 15M15 8V6M8 15H6"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <circle cx="15" cy="15.0001" r="2.56579" stroke={color} strokeWidth={1.5} />
+    <g filter="url(#filter0_dd_590_1462)">
+      <rect x="3.45898" y="3" width="38" height="38" rx="19" fill="white" />
+      <path
+        d="M22.459 29C23.3782 29 24.2885 28.8189 25.1378 28.4672C25.987 28.1154 26.7587 27.5998 27.4087 26.9497C28.0587 26.2997 28.5744 25.5281 28.9261 24.6788C29.2779 23.8295 29.459 22.9193 29.459 22M22.459 29C20.6025 29 18.822 28.2625 17.5092 26.9497C16.1965 25.637 15.459 23.8565 15.459 22M22.459 29V31M29.459 22C29.459 21.0807 29.2779 20.1705 28.9261 19.3212C28.5744 18.4719 28.0587 17.7003 27.4087 17.0503C26.7587 16.4002 25.987 15.8846 25.1378 15.5328C24.2885 15.1811 23.3782 15 22.459 15M29.459 22H31.459M22.459 15C20.6025 15 18.822 15.7375 17.5092 17.0503C16.1965 18.363 15.459 20.1435 15.459 22M22.459 15V13M15.459 22H13.459"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <circle
+        cx="22.4589"
+        cy="22.0001"
+        r="2.56579"
+        stroke={color}
+        stroke-width="1.5"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_dd_590_1462"
+        x="0.458984"
+        y="0.5"
+        width="44"
+        height="44"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dy="0.5" />
+        <feGaussianBlur stdDeviation="1.5" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_590_1462"
+        />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dy="0.5" />
+        <feGaussianBlur stdDeviation="1" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="effect1_dropShadow_590_1462"
+          result="effect2_dropShadow_590_1462"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect2_dropShadow_590_1462"
+          result="shape"
+        />
+      </filter>
+    </defs>
   </svg>
 );
 
