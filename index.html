@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>여기쓰 - 내 근처 쓰레기통 찾기</title>
+    <link rel="canonical" href="https://yeogiss.com" />
+
     <meta
       name="description"
       content="내 주변 쓰레기통, 재활용통, 분리수거 장소를 쉽고 빠르게 찾을 수 있는 서비스. '여기쓰'에서 위치 기반으로 가장 가까운 쓰레기통을 확인하세요."
@@ -21,23 +23,29 @@
       property="og:description"
       content="여기쓰에서 가장 가까운 쓰레기통을 빠르게 찾아보세요."
     />
-    <meta property="og:image" content="/og-image.png" />
-    <meta property="og:url" content="https://your-service-domain.com" />
+    <!-- <meta property="og:image" content="/og-image.png" /> -->
+    <meta property="og:url" content="https://www.yeogiss.com" />
     <meta property="og:type" content="website" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <!-- <meta name="twitter:card" content="summary_large_image" /> -->
     <meta name="twitter:title" content="여기쓰 - 내 근처 쓰레기통 찾기" />
     <meta
       name="twitter:description"
       content="내 주변 쓰레기통과 재활용통을 쉽게 찾아보세요."
     />
-    <meta name="twitter:image" content="/og-image.png" />
+    <!-- <meta name="twitter:image" content="/og-image.png" /> -->
     <link rel="icon" type="image/svg+xml" href="src/assets/favicon.ico" />
-    <!-- Google tag (gtag.js) -->
+
+    <!-- GA4 setting -->
+    <!-- QA 진행용 -->
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id=VITE_GA_MEASUREMENT_ID"
+      src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%"
+    ></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID_2%"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -45,8 +53,9 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
-      gtag("config", "G-R79CFS7RCS");
+      gtag("config", "%VITE_GA_MEASUREMENT_ID%");
+      gtag("config", "%VITE_GA_MEASUREMENT_ID_2%");
+      <!-- GA4 setting end -->
     </script>
   </head>
   <body>
