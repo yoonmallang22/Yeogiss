@@ -14,8 +14,31 @@ const Direction = () => {
   const [arrived, setArrived] = useState(false);
 
   const location = useLocation();
-  const { userLocation, selectedBin } = location.state || {};
   const navigate = useNavigate();
+
+  // 로컬스토리지 안전 파싱 (초기 한 번만)
+  const savedState = useMemo(() => {
+    try {
+      const raw = localStorage.getItem("directionState");
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      console.warn("directionState parse error:", e);
+      return null;
+    }
+  }, []);
+
+  // location.state 우선, 없으면 savedState, 없으면 기본값
+  const { userLocation = null, selectedBin = null } =
+    location.state ?? savedState ?? {};
+
+  useEffect(() => {
+    if (location.state) {
+      localStorage.setItem(
+        "directionState",
+        JSON.stringify({ userLocation, selectedBin }),
+      );
+    }
+  }, [location.state, selectedBin, userLocation]);
 
   const destination = useMemo(
     () => ({ lat: selectedBin.lat, lng: selectedBin.lng }),
@@ -33,7 +56,6 @@ const Direction = () => {
         startName: "startname",
         endName: "endname",
       }),
-    staleTime: 1000 * 60 * 10, // 10분 동안 캐싱
   });
 
   const {
