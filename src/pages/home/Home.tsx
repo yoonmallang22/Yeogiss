@@ -11,6 +11,7 @@ import { getScreenName } from "@/utils/ga";
 import { toast } from "react-toastify";
 import useFirstLocationGrantedEffect from "@/hooks/useFirstLocationGrantedEffect";
 import useGeoPermission from "@/hooks/useGeoPermission";
+import PATH from "@/constants/path";
 
 const DIRECTION_MAX_DISTANCE_METERS = 500;
 
@@ -137,7 +138,7 @@ const Home = () => {
           }
           onClose={clearBinStates}
           directionBtnClick={() => {
-            navigate("/directions", {
+            navigate(PATH.DIRECTIONS, {
               state: { userLocation, selectedBin },
             });
 

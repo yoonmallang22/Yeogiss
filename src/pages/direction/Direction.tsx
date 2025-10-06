@@ -7,6 +7,7 @@ import RouteMap from "@/pages/direction/components/RouteMap";
 import BinInfoCard from "@/pages/home/components/BinInfoCard";
 import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
 import { trackEvent } from "@/lib/trackEvent";
+import PATH from "@/constants/path";
 
 const ARRIVAL_THRESHOLD = 5;
 
@@ -94,7 +95,7 @@ const Direction = () => {
             arrivedSeconds: estimatedTimeSeconds,
           }}
           onClose={() => {
-            navigate("/");
+            navigate(PATH.HOME);
 
             trackEvent("ROUTE_SEARCH_COMPLETED", {
               event: "cancel",
@@ -106,7 +107,7 @@ const Direction = () => {
       ) : (
         <BottomCardWithMeBtnFloat
           onClose={() => {
-            navigate("/");
+            navigate(PATH.HOME);
           }}
           className="flex flex-col items-center justify-center"
         >

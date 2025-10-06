@@ -7,6 +7,7 @@ import { UserLocationControlContext } from "@/components/userLocationControl/Use
 import { useLocation } from "react-router-dom";
 import type { LatLng } from "@/types/geolocation.type";
 import useMapTracking from "@/hooks/useMapTracking";
+import PATH from "@/constants/path";
 
 // 위치권한 있을때만 보여지는 컴포넌트
 const UserLocationControl = ({
@@ -48,7 +49,7 @@ const UserLocationControl = ({
 
   useEffect(() => {
     // 길찾기 화면인 경우
-    if (location.pathname === "/directions") {
+    if (location.pathname === PATH.DIRECTIONS) {
       setLocationButtonFloat(true); // 항상 버튼이 float
       setIsFollowing(false); // 내 위치 추적 off
     }
@@ -67,7 +68,8 @@ const UserLocationControl = ({
   };
 
   // 위치권한이 없으면 내 위치 버튼만 렌더링한다.
-  if (!userLocation) return <MeButton onClick={handleMeButtonClick} isFollowing={false} />;
+  if (!userLocation)
+    return <MeButton onClick={handleMeButtonClick} isFollowing={false} />;
 
   return (
     <UserLocationControlContext.Provider
