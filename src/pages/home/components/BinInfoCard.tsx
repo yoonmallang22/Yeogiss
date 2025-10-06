@@ -86,11 +86,11 @@ const BinInfoCard = ({
 
 const Skeleton = () => {
   return (
-    <div className="w-[97%] rounded-2xl shadow-md bg-white p-5 space-y-2 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs max-w-4xl text-black animate-pulse">
+    <BottomCardWithMeBtnFloat>
       <div className="h-6 bg-gray-300 rounded w-3/4"></div>
       <div className="h-5 bg-gray-300 rounded w-full"></div>
       <div className="h-10 bg-gray-300 rounded w-1/3"></div>
-    </div>
+    </BottomCardWithMeBtnFloat>
   );
 };
 
