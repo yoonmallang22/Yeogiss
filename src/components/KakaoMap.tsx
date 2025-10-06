@@ -22,7 +22,7 @@ const KakaoMap = () => {
 
   if (userLocation === null || loading) {
     return (
-      <Map center={DEFAULT_POSITION} className="w-full h-screen">
+      <Map center={DEFAULT_POSITION} className="w-full h-dvh" level={3}>
         <UserLocationControl />
       </Map>
     );
