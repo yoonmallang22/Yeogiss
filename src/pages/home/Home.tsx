@@ -9,11 +9,12 @@ import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
 import { toast } from "react-toastify";
-import useFirstLocationGrantedEffect from "@/hooks/useFirstLocationGrantedEffect";
-import useGeoPermission from "@/hooks/useGeoPermission";
 import PATH from "@/constants/path";
+import useEffectOnceWhen from "@/hooks/useEffectOnceWhen";
 
 const DIRECTION_MAX_DISTANCE_METERS = 500;
+
+const SERVICEABLE_AREA = ["서울특별시"]; // 현재 서비스 가능 지역
 
 const Home = () => {
   // 최초 쓰레기통의 로드 여부
@@ -22,16 +23,14 @@ const Home = () => {
   const [bins, setBins] = useState<Bin[]>([]);
   // 화면에 선택된 쓰레기통 상태
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
-  const permission = useGeoPermission();
   const kakaoMap = useContext(KakaoMapContext);
   const navigate = useNavigate();
-
   const { setIsFollowing, userLocation } = useContext(
     UserLocationControlContext,
   );
 
-  // 접속시 서울에서 벗어나면 토스트 메시지 처리
-  useFirstLocationGrantedEffect(permission, () => {
+  // 접속시 서비스 가능 지역이 아닌 경우 안내 메시지
+  useEffectOnceWhen(userLocation !== null, () => {
     if (userLocation === null) return;
 
     const geocoder = new kakao.maps.services.Geocoder();
@@ -41,8 +40,13 @@ const Home = () => {
       (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
           const region = result[0].region_1depth_name;
-          if (region !== "서울특별시") {
-            toast("⚠ 현재는 서울시 쓰레기통 위치 정보만 지원돼요.");
+
+          if (SERVICEABLE_AREA.includes(region) === false) {
+            toast(
+              "⚠ 현재는 " +
+                SERVICEABLE_AREA.join(",") +
+                " 쓰레기통 위치 정보만 지원돼요.",
+            );
           }
         }
       },
@@ -100,6 +104,7 @@ const Home = () => {
           setBins(bins);
         }}
       />
+
       <BinMarkers
         bins={bins}
         onBinClick={(bin) => {
