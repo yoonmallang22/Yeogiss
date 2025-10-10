@@ -9,7 +9,7 @@ import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
 import { trackEvent } from "@/lib/trackEvent";
 import PATH from "@/constants/path";
 
-const ARRIVAL_THRESHOLD = 5;
+const ARRIVAL_THRESHOLD = 20;
 
 const Direction = () => {
   const [arrived, setArrived] = useState(false);
