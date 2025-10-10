@@ -8,6 +8,7 @@ import BinInfoCard from "@/pages/home/components/BinInfoCard";
 import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
 import { trackEvent } from "@/lib/trackEvent";
 import PATH from "@/constants/path";
+import useUserLocation from "@/hooks/useUserLocation";
 
 const ARRIVAL_THRESHOLD = 20;
 
@@ -16,6 +17,7 @@ const Direction = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const currentUserLocation = useUserLocation();
 
   // 로컬스토리지 안전 파싱 (초기 한 번만)
   const savedState = useMemo(() => {
@@ -66,14 +68,14 @@ const Direction = () => {
   } = data?.data ?? {};
 
   useEffect(() => {
-    if (!userLocation || !destination) return;
+    if (!currentUserLocation || !destination) return;
 
-    const arrivalDistance = getDistance(userLocation, destination);
+    const arrivalDistance = getDistance(currentUserLocation, destination);
 
     if (arrivalDistance < ARRIVAL_THRESHOLD && !arrived) {
       setArrived(true);
     }
-  }, [userLocation, destination, arrived]);
+  }, [currentUserLocation, destination, arrived]);
 
   if (arrived) {
     trackEvent("ROUTE_SEARCH_COMPLETED", {
