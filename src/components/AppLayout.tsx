@@ -10,7 +10,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     if (!visited) {
       setShowSplash(true);
       sessionStorage.setItem("visitedHome", "true");
-      console.log("??");
 
       const timer = setTimeout(() => {
         setShowSplash(false);

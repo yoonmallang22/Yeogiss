@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import splashImage from "@/src/assets/splash.svg";
+import splashImage from "@/assets/splash.svg";
 
 const Splash = () => {
   const [fadeOut, setFadeOut] = useState(false);
