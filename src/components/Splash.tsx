@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import splashImage from "@/src/assets/splash.svg";
 
 const Splash = () => {
   const [fadeOut, setFadeOut] = useState(false);
@@ -22,7 +23,7 @@ const Splash = () => {
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
-      <img src="/src/assets/splash.svg" className="select-none w-[120px]" />
+      <img src={splashImage} className="select-none w-[120px]" />
     </div>
   );
 };
