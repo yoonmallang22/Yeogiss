@@ -9,9 +9,14 @@ import { useEffect, useState } from "react";
 const KakaoMap = () => {
   useKakaoLoader();
 
-  const userLocation = useUserLocation();
+  const [startTracking, setStartTracking] = useState(false);
+  const userLocation = useUserLocation(startTracking);
   const [center, setCenter] = useState(DEFAULT_POSITION);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setStartTracking(true);
+  }, []);
 
   useEffect(() => {
     if (userLocation && loading) {

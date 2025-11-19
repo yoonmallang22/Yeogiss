@@ -9,6 +9,7 @@ const MAX_RETRY = 3; // 최대 재시도 횟수
 const RETRY_DELAY = 2000; // 재시도 간격(ms)
 
 const useUserLocation = (
+  start: boolean = true,
   options?: PositionOptions,
   throttleMs: number = 1000,
 ): LatLng | null => {
@@ -19,6 +20,8 @@ const useUserLocation = (
   const retryCount = useRef<number>(0);
 
   const startWatching = useCallback(() => {
+    if (!start) return;
+
     if (!navigator.geolocation) {
       setPosition(null);
       return;
@@ -64,7 +67,7 @@ const useUserLocation = (
         ...options,
       },
     );
-  }, [options, throttleMs]);
+  }, [start, options, throttleMs]);
 
   // 초기 실행
   useEffect(startWatching, [startWatching]);
