@@ -96,7 +96,7 @@ const MeButton = ({ onClick, isFollowing }: MeButtonProps) => {
   const { float } = useContext(UserLocationControlContext);
   return (
     <button
-      className={`absolute left-2.5 z-[1000] cursor-pointer`}
+      className={`absolute left-2.5 z-[10] cursor-pointer`}
       style={{ bottom: 30 + float }}
       onClick={() => {
         onClick();

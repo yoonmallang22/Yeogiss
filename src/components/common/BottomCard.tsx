@@ -12,14 +12,14 @@ const BottomCard = ({
   ...rest
 }: {
   children?: React.ReactNode;
-  ref: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
   onClose?: () => void;
   className?: string;
 } & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
       ref={ref}
-      className={`${className} w-[97%] rounded-2xl shadow-md bg-white space-y-2 p-5 z-10 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs min-h-[132px] text-black`}
+      className={`${className} w-[97%] rounded-2xl shadow-md bg-white space-y-2 p-5 z-2000 absolute bottom-8 left-1/2 -translate-x-1/2 min-w-xs h-[136px] text-black]`}
       {...rest}
     >
       {onClose && (

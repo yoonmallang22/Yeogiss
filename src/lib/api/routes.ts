@@ -11,7 +11,7 @@ export interface GetRoutesParams {
   endName: string;
 }
 
-interface Routes {
+export interface Routes {
   totalDistanceMeters: number;
   estimatedTimeSeconds: number;
   path: { lat: number; lng: number }[];
