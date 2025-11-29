@@ -1,12 +1,11 @@
 import { Map } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@/hooks/useKakaoLoader";
 import { DEFAULT_POSITION } from "@/constants/geo";
-import { Outlet } from "react-router-dom";
 import UserLocationControl from "@/components/userLocationControl/UserLocationControl";
 import useUserLocation from "@/hooks/useUserLocation";
 import { useEffect, useState } from "react";
 
-const KakaoMap = () => {
+const KakaoMap = ({ children }: { children: React.ReactNode }) => {
   useKakaoLoader();
 
   const [startTracking, setStartTracking] = useState(false);
@@ -36,7 +35,7 @@ const KakaoMap = () => {
   return (
     <Map center={center} className="w-full h-dvh" level={3}>
       <UserLocationControl userLocation={userLocation}>
-        <Outlet />
+        {children}
       </UserLocationControl>
     </Map>
   );
