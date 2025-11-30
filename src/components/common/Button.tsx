@@ -19,7 +19,7 @@ const Button = ({
   return (
     <button
       {...rest}
-      className={`${CLASS.base} ${CLASS[variant]}${rest.className ? rest.className : ""}`}
+      className={`${CLASS.base} ${CLASS[variant]} ${rest.className ? rest.className : ""}`}
       disabled={variant === "disabled" ? true : rest.disabled}
     >
       {text}
