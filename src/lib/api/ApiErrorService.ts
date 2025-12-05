@@ -1,3 +1,5 @@
+import { trackEvent } from "@/lib/trackEvent";
+import { getScreenName } from "@/utils/ga";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -5,16 +7,52 @@ let errorHandler: ((error: unknown) => void) | null = null;
 
 export const deafultErrorHanlder = (error: unknown) => {
   if (axios.isAxiosError(error)) {
-    console.log("axiosError!!");
     if (!error.response) {
-      // 네트워크 단절, DNS 오류, CORS 문제 등
       toast("⚠ 네트워크 연결이 불안정해요.\n 잠시 후 다시 시도해주세요.", {
         style: { whiteSpace: "pre-line" },
       });
+    } else {
+      const httpStatus = error.response.status;
+      const httpMessage = error.response.data.message;
+
+      const handler =
+        statusHandlers[httpStatus as keyof typeof statusHandlers] ??
+        statusHandlers.default;
+      handler(httpMessage);
+
+      GA4ErrorTracking(httpStatus, httpMessage);
     }
   }
 
   return Promise.reject(error);
+};
+
+const statusHandlers = {
+  400: (msg: string) => toast(`⚠ ${msg}`),
+  500: () =>
+    toast(`⚠ 서버 오류가 발생했습니다. \n 잠시 후 다시 시도해주세요.`, {
+      style: { whiteSpace: "pre-line" },
+    }),
+  default: (message: string) =>
+    toast(
+      `⚠ ${message || "알 수 없는 오류가 발생했습니다.\n 잠시 후 다시 시도해주세요."}`,
+      {
+        style: { whiteSpace: "pre-line" },
+      },
+    ),
+};
+
+const GA4ErrorTracking = (httpStatus: number, httpMessage: string) => {
+  trackEvent("ERROR_OCCURRED", {
+    error_code: httpStatus,
+    error_message: httpMessage,
+    screen_name: getScreenName(location.pathname),
+  });
+
+  trackEvent("TOAST_MESSAGE_DISPLAYED", {
+    message_type: httpStatus >= 500 ? "server_error" : "client_error",
+    message_content: httpMessage,
+  });
 };
 
 errorHandler = deafultErrorHanlder;
@@ -29,7 +67,6 @@ export const ApiErrorService = {
   },
 
   dispatch(error: unknown) {
-    console.log(errorHandler);
     if (errorHandler) {
       return errorHandler(error);
     }

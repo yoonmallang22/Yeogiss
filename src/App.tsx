@@ -1,5 +1,4 @@
 import FallbackComponent from "@/components/FallbackComponent";
-import useApiError from "@/hooks/useApiError";
 import {
   QueryCache,
   QueryClient,
@@ -10,17 +9,8 @@ import Router from "@/routes/Router";
 import Toast from "@/components/common/Toast";
 
 function App() {
-  const { handleError } = useApiError();
-
   const queryClient = new QueryClient({
-    defaultOptions: {
-      mutations: {
-        onError: handleError,
-      },
-    },
-    queryCache: new QueryCache({
-      onError: handleError,
-    }),
+    queryCache: new QueryCache(),
   });
 
   return (
