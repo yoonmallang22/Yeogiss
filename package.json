@@ -16,7 +16,7 @@
     "axios": "^1.11.0",
     "lucide-react": "^0.544.0",
     "path": "^0.12.7",
-    "react": "^19.1.1",
+    "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-error-boundary": "^6.0.0",
     "react-kakao-maps-sdk": "^1.2.0",
