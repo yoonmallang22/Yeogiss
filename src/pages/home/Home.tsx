@@ -12,23 +12,30 @@ import { toast } from "react-toastify";
 import useFirstLocationGrantedEffect from "@/hooks/useFirstLocationGrantedEffect";
 import useGeoPermission from "@/hooks/useGeoPermission";
 import PATH from "@/constants/path";
+import PrivacyThirdPartyConsentCard from "@/pages/home/components/PrivacyThirdPartyConsentCard";
+import { usePrivacyThirdPartyConsentFlow } from "@/lib/contexts/PrivacyThirdPartyConsentFlowContext";
+import PrivacyThirdPartyPopup from "@/pages/home/components/PrivacyThirdPartyConsentPopup";
 
 const DIRECTION_MAX_DISTANCE_METERS = 500;
 
 const Home = () => {
-  // 최초 쓰레기통의 로드 여부
-  const [loaded, setLoaded] = useState(false);
-  // 쓰레기통 데이터
-  const [bins, setBins] = useState<Bin[]>([]);
-  // 화면에 선택된 쓰레기통 상태
-  const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
+  const [loaded, setLoaded] = useState(false); // 최초 쓰레기통의 로드 여부
+  const [bins, setBins] = useState<Bin[]>([]); // 쓰레기통 데이터
+  const [selectedBin, setSelectedBin] = useState<Bin | null>(null); // 화면에 선택된 쓰레기통 상태
   const permission = useGeoPermission();
   const kakaoMap = useContext(KakaoMapContext);
   const navigate = useNavigate();
-
   const { setIsFollowing, userLocation } = useContext(
     UserLocationControlContext,
   );
+
+  // 개인정보 제3자 제공 동의 플로우 관련 컨텍스트, requestDirection의 api가 401로 응답시 isConsentRequired가 true가 된다.
+  // completeThirdPartyConsentFlow 호출시 동의 플로우가 완료되고, requestDirection에 전달된 callback 함수를 호출한다.
+  const {
+    state: { isConsentRequired },
+    requestDirection,
+    isConsentPopupOpen,
+  } = usePrivacyThirdPartyConsentFlow();
 
   // 접속시 서울에서 벗어나면 토스트 메시지 처리
   useFirstLocationGrantedEffect(permission, () => {
@@ -95,11 +102,8 @@ const Home = () => {
   return (
     <>
       {/* 현재 위치에서 쓰레기통 찾기 버튼 */}
-      <LoadBinsButton
-        onLoaded={(bins) => {
-          setBins(bins);
-        }}
-      />
+      <LoadBinsButton onLoaded={setBins} />
+      {/* 쓰레기통 마커 */}
       <BinMarkers
         bins={bins}
         onBinClick={(bin) => {
@@ -126,9 +130,8 @@ const Home = () => {
         }}
         selectedId={selectedBin?.binId}
       />
-
-      {/* 선택된 쓰레기통이 있으면 정보 카드 컴포넌트 렌더링 */}
-      {selectedBin && (
+      {/* 선택된 쓰레기통이 있고, 개인정보 제3자 제공 동의한 경우 쓰레기통 정보 카드 컴포넌트 렌더링 */}
+      {selectedBin && !isConsentRequired && (
         <BinInfoCard
           info={{
             bin: selectedBin,
@@ -137,9 +140,20 @@ const Home = () => {
             selectedBin.distanceMeters <= DIRECTION_MAX_DISTANCE_METERS
           }
           onClose={clearBinStates}
-          directionBtnClick={() => {
-            navigate(PATH.DIRECTIONS, {
-              state: { userLocation, selectedBin },
+          directionBtnClick={async () => {
+            const params = {
+              startLat: userLocation.lat,
+              startLng: userLocation.lng,
+              endLat: selectedBin.lat,
+              endLng: selectedBin.lng,
+              startName: "startname",
+              endName: "endname",
+            };
+
+            requestDirection(params, (routes) => {
+              navigate(PATH.DIRECTIONS, {
+                state: { userLocation, selectedBin, routes },
+              });
             });
 
             trackEvent("ROUTE_SEARCH_INITIATED", {
@@ -153,6 +167,14 @@ const Home = () => {
           }}
         />
       )}
+
+      {/* 길 안내를 위한 개인정보 제3자 제공동의 바텀카드 */}
+      {isConsentRequired && (
+        <PrivacyThirdPartyConsentCard onClose={clearBinStates} />
+      )}
+
+      {/* 개인정보 제3자 제공 팝업 */}
+      {isConsentPopupOpen && <PrivacyThirdPartyPopup />}
     </>
   );
 };
