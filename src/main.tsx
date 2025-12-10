@@ -4,7 +4,10 @@ import "./index.css";
 import App from "./App.tsx";
 import { worker } from "@/mocks/mocks.ts";
 
-if (import.meta.env.VITE_DEV) {
+if (
+  import.meta.env.VITE_DEV === "true" &&
+  import.meta.env.VITE_MOCK_API === "true"
+) {
   worker.start().then(() => {
     createRoot(document.getElementById("root")!).render(
       <StrictMode>

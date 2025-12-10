@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import fetchRoutes from "@/lib/api/routes";
 import { getDistance } from "@/utils/geo";
 import RouteMap from "@/pages/direction/components/RouteMap";
 import BinInfoCard from "@/pages/home/components/BinInfoCard";
@@ -14,7 +12,6 @@ const ARRIVAL_THRESHOLD = 20;
 
 const Direction = () => {
   const [arrived, setArrived] = useState(false);
-
   const location = useLocation();
   const navigate = useNavigate();
   const currentUserLocation = useUserLocation();
@@ -31,41 +28,31 @@ const Direction = () => {
   }, []);
 
   // location.state 우선, 없으면 savedState, 없으면 기본값
-  const { userLocation = null, selectedBin = null } =
-    location.state ?? savedState ?? {};
+  const {
+    userLocation = null,
+    selectedBin = null,
+    routes = null,
+  } = location.state ?? savedState ?? {};
 
   useEffect(() => {
     if (location.state) {
       localStorage.setItem(
         "directionState",
-        JSON.stringify({ userLocation, selectedBin }),
+        JSON.stringify({ userLocation, selectedBin, routes }),
       );
     }
-  }, [location.state, selectedBin, userLocation]);
+  }, [location.state, selectedBin, userLocation, routes]);
 
   const destination = useMemo(
     () => ({ lat: selectedBin.lat, lng: selectedBin.lng }),
     [selectedBin],
   );
 
-  const { data } = useQuery({
-    queryKey: ["routes", userLocation, destination],
-    queryFn: () =>
-      fetchRoutes({
-        startLat: userLocation.lat,
-        startLng: userLocation.lng,
-        endLat: destination.lat,
-        endLng: destination.lng,
-        startName: "startname",
-        endName: "endname",
-      }),
-  });
-
   const {
     estimatedTimeSeconds = 0,
     totalDistanceMeters = 0,
     path = [],
-  } = data?.data ?? {};
+  } = routes ?? {};
 
   useEffect(() => {
     if (!currentUserLocation || !destination) return;

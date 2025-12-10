@@ -3,6 +3,7 @@ const API_VERSION = "v1";
 const ENDPOINTS = {
   GET_BINS: "api/" + API_VERSION + "/bins/nearby",
   GET_ROUTES: "api/" + API_VERSION + "/routes",
+  PRIVACY_THIRD_PARTY_CONSENT: "api/" + API_VERSION + "/agreements",
   GET_BIN: ({
     binId,
     currentLat,

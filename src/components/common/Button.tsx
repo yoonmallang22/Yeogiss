@@ -1,5 +1,5 @@
 const CLASS = {
-  base: "px-7 py-2 rounded-full text-sm font-medium transition cursor-pointer",
+  base: "px-7 py-2 rounded-full text-sm font-medium transition cursor-pointer flex items-center justify-center",
   primary: "bg-secondary text-white",
   secondary: "bg-[#EAFAEA] text-secondary",
   disabled: "bg-disabled text-white disabled:cursor-not-allowed",
