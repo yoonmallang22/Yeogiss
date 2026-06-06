@@ -76,3 +76,25 @@
 
   --font-sans: "NotoSansKR", sans-serif;
 }
+
+@keyframes locationPulse {
+  0% {
+    transform: scale(0.5); /* 20px */
+    opacity: 0.5;
+    background-color: var(--color-secondary)
+  }
+
+  100% {
+    transform: scale(1); /* 40px */
+    opacity: 0.2;
+    background-color: var(--color-secondary)
+  }
+}
+
+.location-pulse {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  animation: locationPulse 0.8s ease-out 2;
+  animation-fill-mode: forwards;
+}
