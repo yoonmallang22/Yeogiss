@@ -1,7 +1,7 @@
 import type { Bin } from "@/lib/api/bin";
-import walkImage from "@/assets/bx_walk.png";
-import recycleBinIcon from "@/assets/recycle-bin-icon.png";
-import regularBinIcon from "@/assets/regular-bin-icon.png";
+import walkImage from "@/assets/bx_walk.svg";
+import recycleBinIcon from "@/assets/recycle-icon.svg";
+import regularBinIcon from "@/assets/regular-icon.svg";
 import type { LatLng } from "@/types/geolocation.type";
 import { secondsToHMS } from "@/utils/time";
 import { metersToKilometers } from "@/utils/geo";
@@ -43,16 +43,16 @@ const BinInfoCard = ({
       {/* 설치 위치 */}
       <div className="flex items-center gap-2 text-sm">
         {bin.type === "GENERAL" ? (
-          <img className="w-4 h-5" src={regularBinIcon} />
+          <img src={regularBinIcon} />
         ) : (
-          <img className="w-5 h-5" src={recycleBinIcon} />
+          <img src={recycleBinIcon} />
         )}
         <span>{bin.roadAddress}</span>
       </div>
 
       <div className="flex items-center justify-between mt-2">
         <div className="flex items-center gap-2">
-          <img className="w-8 h-8" src={walkImage} />
+          <img src={walkImage} />
           <div>
             {arrivedSeconds &&
               (() => {
