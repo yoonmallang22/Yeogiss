@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { getBinById, getNearbyBins, type Bin } from "@/lib/api/bin";
 import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
@@ -26,6 +26,10 @@ const Home = () => {
   const [bins, setBins] = useState<Bin[]>([]); // 쓰레기통 데이터
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null); // 화면에 선택된 쓰레기통 상태
   const [filteringBinType, setFilteringBinType] = useState<BinType>("all");
+  const filteredBins = useMemo(
+    () => filteringBins(bins, filteringBinType),
+    [bins, filteringBinType],
+  );
   const permission = useGeoPermission();
   const kakaoMap = useContext(KakaoMapContext);
   const navigate = useNavigate();
@@ -95,11 +99,6 @@ const Home = () => {
     };
   }, [kakaoMap]);
 
-  // 필터링 값 변경시마다 쓰레기통 배열 상태를 업데이트
-  useEffect(() => {
-    filteringBins(bins, filteringBinType);
-  }, [filteringBinType, bins]);
-
   // 쓰레기통 관련 상태를 초기화
   const clearBinStates = () => {
     setSelectedBin(null);
@@ -116,7 +115,7 @@ const Home = () => {
       <LoadBinsButton onLoaded={setBins} />
       {/* 쓰레기통 마커 */}
       <BinMarkers
-        bins={bins}
+        bins={filteredBins}
         onBinClick={(bin) => {
           trackEvent("TRASH_BIN_MARKER_CLICKED", {
             method: "click",

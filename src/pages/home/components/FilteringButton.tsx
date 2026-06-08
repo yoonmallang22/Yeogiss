@@ -18,7 +18,7 @@ const FilteringButton = ({
   const [selected, setSelected] = useState<BinType>("all"); // default 전체
 
   return (
-    <div className="absolute top-4 left-3 z-10000 flex gap-2">
+    <div className="absolute top-4 left-3 z-10 flex gap-2">
       <RadioButton
         variant={selected === "all" ? "selected" : "rounded"}
         name="bins-filtering"
