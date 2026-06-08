@@ -76,7 +76,7 @@ const LoadBinsButton = ({
 
   return (
     <button
-      className="absolute top-4 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-md z-10 flex items-center gap-2 text-sm cursor-pointer"
+      className="absolute top-16 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-md z-10 flex items-center gap-2 text-sm cursor-pointer"
       onClick={() => {
         lastCenterRef.current = kakaoMap.getCenter();
         setShow(false);

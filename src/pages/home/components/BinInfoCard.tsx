@@ -5,7 +5,7 @@ import regularBinIcon from "@/assets/regular-bin-icon.png";
 import type { LatLng } from "@/types/geolocation.type";
 import { secondsToHMS } from "@/utils/time";
 import { metersToKilometers } from "@/utils/geo";
-import Button from "@/components/common/Button";
+import Button from "@/components/common/Button/Button";
 import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
 
 /**

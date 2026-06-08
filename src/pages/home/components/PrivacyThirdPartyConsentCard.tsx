@@ -1,6 +1,6 @@
 import BackDrop from "@/components/common/BackDrop";
 import BottomCard from "@/components/common/BottomCard";
-import Button from "@/components/common/Button";
+import Button from "@/components/common/Button/Button";
 import { getPrivacyThirdPartyConsent } from "@/lib/api/routes";
 import { usePrivacyThirdPartyConsentFlow } from "@/lib/contexts/PrivacyThirdPartyConsentFlowContext";
 
