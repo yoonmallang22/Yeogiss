@@ -26,14 +26,15 @@ const PrivacyThirdPartyConsentCard = ({
             resetThirdPartyConsentFlow();
             if (onClose) onClose();
           }}
-          className="px-5 py-3 flex flex-col justify-between"
+          className="px-6 py-7 flex flex-col justify-between"
         >
-          <div className="flex flex-col gap-1.5 mb-0">
-            <p className="text-sm font-medium mb-0">
-              길 안내를 위해 위치 정보 동의가 필요해요.
+          <div className="flex flex-col gap-3 mb-0">
+            <p className="text-lg font-bold mb-0">
+              길 안내를 위해
+              <br /> 위치 정보 동의가 필요해요
             </p>
             <p className="text-xs mb-0">
-              길 안내가 끝나면 내 위치와 목적지는 바로 삭제돼요.
+              길 안내가 끝나면 내 위치와 목적지는 바로 삭제돼요
             </p>
             <button
               type="button"
@@ -54,20 +55,20 @@ const PrivacyThirdPartyConsentCard = ({
                 />
               </svg>
             </button>
+            <Button
+              variant="primary"
+              className="self-center w-[95%]"
+              onClick={async () => {
+                // 동의 완료 처리 후 길안내 재시작
+                const response = await getPrivacyThirdPartyConsent();
+                if (response.statusCode >= 200 && response.statusCode < 300) {
+                  completeThirdPartyConsentFlow();
+                }
+              }}
+            >
+              동의하고 길 안내받기
+            </Button>
           </div>
-          <Button
-            variant="primary"
-            className="self-center"
-            onClick={async () => {
-              // 동의 완료 처리 후 길안내 재시작
-              const response = await getPrivacyThirdPartyConsent();
-              if (response.statusCode >= 200 && response.statusCode < 300) {
-                completeThirdPartyConsentFlow();
-              }
-            }}
-          >
-            동의하고 길안내 받기
-          </Button>
         </BottomCard>
       }
     />

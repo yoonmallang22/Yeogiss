@@ -97,7 +97,7 @@ const MeButton = ({ onClick, isFollowing }: MeButtonProps) => {
   return (
     <button
       className={`absolute left-2.5 z-[10] cursor-pointer`}
-      style={{ bottom: 30 + float }}
+      style={{ bottom: float }}
       onClick={() => {
         onClick();
 

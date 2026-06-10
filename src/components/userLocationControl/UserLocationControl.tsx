@@ -1,4 +1,10 @@
-import { useState, useEffect, useContext, type ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
 import MyMarker from "@/components/userLocationControl/MyMarker";
@@ -56,16 +62,16 @@ const UserLocationControl = ({
   }, [location, setLocationButtonFloat]);
 
   // 내 위치 버튼을 띄우는 함수
-  const floatMeButton = (bottom: number) => {
+  const floatMeButton = useCallback((bottom: number) => {
     setLocationButtonFloat(true);
     setFloat(bottom);
-  };
+  }, []);
 
   // 내 위치 버튼을 원래 위치로 옮기는 함수
-  const unfloatMeButton = () => {
+  const unfloatMeButton = useCallback(() => {
     setLocationButtonFloat(false);
     setFloat(0);
-  };
+  }, []);
 
   // 위치권한이 없으면 내 위치 버튼만 렌더링한다.
   if (!userLocation)
