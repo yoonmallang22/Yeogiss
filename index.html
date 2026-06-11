@@ -1,10 +1,91 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>여기쓰</title>
+
+    <title>여기쓰 - 깨끗한 서울, 가까운 쓰레기통 찾기</title>
+    <link rel="canonical" href="https://yeogiss.com" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="alternate" hreflang="ko" href="https://yeogiss.com" />
+
+    <meta
+      name="description"
+      content="깨끗한 서울을 위해 내 주변 가까운 쓰레기통 찾고, 길 안내까지 한 번에!"
+    />
+    <meta
+      name="keywords"
+      content="서울, 서울시, 쓰레기통, 서울 쓰레기통, 서울시 쓰레기통, 위치, 근처, 근처 쓰레기통, 가까운 쓰레기통, 재활용통, 분리수거, 쓰레기 버리기, 위치기반 서비스, 지도, 길찾기, 쓰레기통 길찾기, 여기쓰"
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph (소셜미디어 공유 시) -->
+    <meta
+      property="og:title"
+      content="여기쓰 - 지금 내 위치에서 가까운 쓰레기통 찾기"
+    />
+    <meta
+      property="og:description"
+      content="서울 어디서든 내 근처 쓰레기통 위치와 길 안내까지 한 번에!"
+    />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:url" content="https://www.yeogiss.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="여기쓰" />
+    <meta property="og:locale" content="ko_KR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="/og-image.jpg" />
+    <meta name="twitter:title" content="여기쓰 - 내 근처 쓰레기통 찾기" />
+    <meta
+      name="twitter:description"
+      content="내 주변 쓰레기통과 재활용통을 쉽게 찾아보세요."
+    />
+    <meta name="twitter:image" content="/og-image.jpg" />
+
+    <!-- Google Search Console -->
+    <meta
+      name="google-site-verification"
+      content="iuPDCFodugY6QuvuC_YfmIDCloXe1E3BMrtHlhtyK8Q"
+    />
+    <!-- Naver Search Advisor -->
+    <meta
+      name="naver-site-verification"
+      content="cca3de8742703b0c68bed25f47958b5d931af14e"
+    />
+
+    <!-- Google SEO 강화 -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "여기쓰",
+        "url": "https://yeogiss.com",
+        "logo": "https://yeogiss.com/logo.png",
+        "description": "깨끗한 서울을 위해 내 주변 가까운 쓰레기통 찾고, 길 안내까지 한 번에!"
+      }
+    </script>
+
+    <!-- GA4 setting -->
+    <!-- QA 진행용 -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%"
+    ></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID_2%"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "%VITE_GA_MEASUREMENT_ID%");
+      gtag("config", "%VITE_GA_MEASUREMENT_ID_2%");
+    </script>
+    <!-- GA4 setting end -->
   </head>
   <body>
     <div id="root"></div>
