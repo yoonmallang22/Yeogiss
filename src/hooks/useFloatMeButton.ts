@@ -6,16 +6,14 @@ type UseFloatMeButtonOptions = {
   gap?: number;
 };
 
-const DEFAULT_GAP = 10;
-
 /**
  * 대상 요소의 높이만큼 '내 위치' 버튼을 위로 띄운다.
  */
 const useFloatMeButton = (
   ref: React.RefObject<HTMLElement | null>,
-  { enabled = true, gap = DEFAULT_GAP }: UseFloatMeButtonOptions = {},
+  { enabled = true, gap = 0 }: UseFloatMeButtonOptions = {},
 ) => {
-  const { floatMeButton, unfloatMeButton } = useContext(
+  const { setMeButtonBottom, resetMeButtonBottom } = useContext(
     UserLocationControlContext,
   );
 
@@ -24,8 +22,7 @@ const useFloatMeButton = (
 
     const element = ref.current;
     const updateOffset = () => {
-      console.log(element.offsetHeight);
-      floatMeButton(element.offsetHeight + gap);
+      setMeButtonBottom(element.offsetHeight + gap);
     };
 
     updateOffset();
@@ -35,9 +32,9 @@ const useFloatMeButton = (
 
     return () => {
       observer.disconnect();
-      unfloatMeButton();
+      resetMeButtonBottom();
     };
-  }, [enabled, floatMeButton, gap, ref, unfloatMeButton]);
+  }, [enabled, gap, ref, resetMeButtonBottom, setMeButtonBottom]);
 };
 
 export default useFloatMeButton;

@@ -7,13 +7,12 @@ type TUserLocationControlContext = {
   isFollowing: boolean;
   setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>;
 
-  isLocationButtonFloat: boolean;
-  float: number;
+  meButtonBottom: number;
   /**
-   * '내 위치' 버튼을 띄우는 함수, 하단으로 부터 얼마나 띄울지 px 단위로 전달
+   * '내 위치' 버튼의 화면 하단 기준 위치를 px 단위로 지정
    */
-  floatMeButton: (bottom: number) => void;
-  unfloatMeButton: () => void;
+  setMeButtonBottom: (bottom: number) => void;
+  resetMeButtonBottom: () => void;
 };
 
 export const UserLocationControlContext =
@@ -23,8 +22,7 @@ export const UserLocationControlContext =
     isFollowing: false,
     setIsFollowing: () => {},
 
-    isLocationButtonFloat: false,
-    float: 0,
-    floatMeButton: () => {},
-    unfloatMeButton: () => {},
+    meButtonBottom: 20,
+    setMeButtonBottom: () => {},
+    resetMeButtonBottom: () => {},
   });

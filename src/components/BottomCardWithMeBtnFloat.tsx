@@ -15,7 +15,7 @@ const BottomCardWithMeBtnFloat = ({
 } & React.HTMLAttributes<HTMLDivElement>) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  useFloatMeButton(ref);
+  useFloatMeButton(ref, { gap: 10 });
 
   return (
     <BottomCard ref={ref} onClose={onClose} {...rest}>
