@@ -7,6 +7,7 @@ import {
 import { ErrorBoundary } from "react-error-boundary";
 import Router from "@/routes/Router";
 import Toast from "@/components/common/Toast";
+import { LoadingProvider } from "@/lib/loading/LoadingContext";
 
 function App() {
   const queryClient = new QueryClient({
@@ -16,8 +17,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary FallbackComponent={FallbackComponent}>
-        <Router />
-        <Toast />
+        <LoadingProvider>
+          <Router />
+          <Toast />
+        </LoadingProvider>
       </ErrorBoundary>
     </QueryClientProvider>
   );

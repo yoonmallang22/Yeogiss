@@ -116,6 +116,7 @@ const Home = () => {
       {/* 쓰레기통 마커 */}
       <BinMarkers
         bins={filteredBins}
+        id={`${filteringBinType}-${filteredBins.length}`}
         onBinClick={(bin) => {
           trackEvent("TRASH_BIN_MARKER_CLICKED", {
             method: "click",
@@ -146,6 +147,7 @@ const Home = () => {
           info={{
             bin: selectedBin,
           }}
+          loading={selectedBin && !selectedBin.distanceMeters}
           isDirectionAvailable={
             selectedBin.distanceMeters <= DIRECTION_MAX_DISTANCE_METERS
           }
@@ -193,6 +195,7 @@ const Home = () => {
  * 쓰레기통 필터링 기능, 화면 선택 옵션(전체, 일반, 재활용)에 따라서
  */
 const filteringBins = (bins: Bin[], option: BinType) => {
+  console.log("filtering!!");
   if (option === "all") {
     return bins;
   }

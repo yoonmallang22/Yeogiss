@@ -3,6 +3,7 @@ import BottomCard from "@/components/common/BottomCard";
 import Button from "@/components/common/Button/Button";
 import { getPrivacyThirdPartyConsent } from "@/lib/api/routes";
 import { usePrivacyThirdPartyConsentFlow } from "@/lib/contexts/PrivacyThirdPartyConsentFlowContext";
+import useLoadingApi from "@/lib/loading/useLoadingApi";
 
 /**
  * 길안내 버튼 클릭 후 개인정보 제3자 동의가 필요한 사용자인 경우 화면에 표시되는 컴포넌트
@@ -17,6 +18,9 @@ const PrivacyThirdPartyConsentCard = ({
     toggleConsentPopupOpen,
     completeFlow: completeThirdPartyConsentFlow,
   } = usePrivacyThirdPartyConsentFlow();
+  const getPrivacyConsentWithLoading = useLoadingApi(
+    getPrivacyThirdPartyConsent,
+  );
 
   return (
     <BackDrop
@@ -60,7 +64,7 @@ const PrivacyThirdPartyConsentCard = ({
               className="self-center w-[95%]"
               onClick={async () => {
                 // 동의 완료 처리 후 길안내 재시작
-                const response = await getPrivacyThirdPartyConsent();
+                const response = await getPrivacyConsentWithLoading();
                 if (response.statusCode >= 200 && response.statusCode < 300) {
                   completeThirdPartyConsentFlow();
                 }

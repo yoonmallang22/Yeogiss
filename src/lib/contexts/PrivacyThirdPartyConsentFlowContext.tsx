@@ -7,6 +7,7 @@ import {
 import type { GetRoutesParams, Routes } from "@/lib/api/routes";
 import { fetchRoutes } from "@/lib/api/routes";
 import { toast } from "react-toastify";
+import useLoadingApi from "@/lib/loading/useLoadingApi";
 
 interface PrivacyThirdPartyConsentFlowState {
   /**
@@ -79,6 +80,8 @@ const PrivacyThirdPartyConsentFlowProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const fetchRoutesWithLoading = useLoadingApi(fetchRoutes);
+
   const [state, setState] = useState<PrivacyThirdPartyConsentFlowState>({
     isConsentRequired: false, // 동의가 필요한지에 대한 상태
     pendingApiParameter: null, // 임시 저장한 길찾기 요청 request 파라미터
@@ -127,13 +130,13 @@ const PrivacyThirdPartyConsentFlowProvider = ({
         }
       });
 
-      const response = await fetchRoutes(getRoutesParams);
+      const response = await fetchRoutesWithLoading(getRoutesParams);
 
       successCallback(response.data);
       // 요청이 성공했으므로 에러 핸들러를 기본값으로 복원한다.
       ApiErrorService.register(deafultErrorHanlder);
     },
-    [],
+    [fetchRoutesWithLoading],
   );
 
   // 개인정보 제3자 제공동의 완료시 호출하는 함수
@@ -155,14 +158,14 @@ const PrivacyThirdPartyConsentFlowProvider = ({
     resetFlow();
 
     // pending 상태었던 길찾기 재요청
-    const response = await fetchRoutes(pendingApiParameter);
+    const response = await fetchRoutesWithLoading(pendingApiParameter);
 
     if (successCallbackRef.current) {
       successCallbackRef.current(response.data);
     }
 
     ApiErrorService.register(deafultErrorHanlder);
-  }, [state.pendingApiParameter, resetFlow]);
+  }, [state.pendingApiParameter, resetFlow, fetchRoutesWithLoading]);
 
   const toggleConsentPopupOpen = React.useCallback(() => {
     setIsConsentPopupOpen((prev) => !prev);
