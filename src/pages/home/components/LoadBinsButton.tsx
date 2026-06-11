@@ -107,7 +107,7 @@ const LoadBinsButton = ({
         });
       }}
     >
-      <img src={reloadImage} alt="쓰레기통 더보기" />이 위치에서 다시 찾기
+      <img src={reloadImage} alt="쓰레기통 더보기" />이 위치에서 재검색
     </button>
   );
 };
