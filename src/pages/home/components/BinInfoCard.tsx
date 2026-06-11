@@ -36,16 +36,16 @@ const BinInfoCard = ({
   return (
     <BottomCardWithMeBtnFloat onClose={onClose}>
       {/* 위치명 */}
-      <p className="font-medium text-base truncate">
+      <p className="font-medium text-base truncate mb-3">
         {bin.detailAddress ? bin.detailAddress : "쓰레기통(정보 없음)"}
       </p>
 
       {/* 설치 위치 */}
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 text-sm ml-2 mb-3">
         {bin.type === "GENERAL" ? (
-          <img src={regularBinIcon} />
+          <img className="w-[24px] h-[24px]" src={regularBinIcon} />
         ) : (
-          <img src={recycleBinIcon} />
+          <img className="w-[24px] h-[24px]" src={recycleBinIcon} />
         )}
         <span>{bin.roadAddress}</span>
       </div>
