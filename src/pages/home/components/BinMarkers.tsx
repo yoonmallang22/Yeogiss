@@ -1,5 +1,7 @@
 import regularMarkerImage from "@/assets/regular-marker.svg";
-import selectedMarkerImage from "@/assets/target-marker.svg";
+import selectedRegularMarkerImage from "@/assets/target-marker.svg";
+import recycleMarkerImage from "@/assets/recycle-marker.svg";
+import selectedRecycleMarkerImage from "@/assets/target-marker-recycle.svg";
 import type { Bin } from "@/lib/api/bin";
 import { useContext } from "react";
 import {
@@ -14,9 +16,29 @@ const IMAGE = {
     src: regularMarkerImage,
     size: { width: 16.5 * 1.5, height: 19.5 * 1.5 },
   },
-  selected: {
-    src: selectedMarkerImage,
+  regularSelected: {
+    src: selectedRegularMarkerImage,
     size: { width: 25 * 1.5, height: 29 * 1.5 },
+  },
+  recycle: {
+    src: recycleMarkerImage,
+    size: { width: 25 * 1.5, height: 29 * 1.5 },
+  },
+  recycleSelected: {
+    src: selectedRecycleMarkerImage,
+    size: { width: 25 * 1.5, height: 29 * 1.5 },
+  },
+};
+
+const iconMap = {
+  GENERAL: {
+    default: IMAGE.regular,
+    selected: IMAGE.regularSelected,
+  },
+
+  RECYCLE: {
+    default: IMAGE.recycle,
+    selected: IMAGE.recycleSelected,
   },
 };
 
@@ -72,7 +94,11 @@ const BinMarkers = ({
             key={`${bin.binId}-${id}`}
             position={{ lat: bin.lat, lng: bin.lng }}
             clickable={true}
-            image={selectedId === bin.binId ? IMAGE.selected : IMAGE.regular}
+            image={
+              iconMap[bin.type][
+                selectedId === bin.binId ? "selected" : "default"
+              ]
+            }
             onClick={() => {
               if (onBinClick) {
                 onBinClick(bin);

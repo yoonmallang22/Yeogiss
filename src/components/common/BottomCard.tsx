@@ -19,7 +19,7 @@ const BottomCard = ({
   return (
     <div
       ref={ref}
-      className={`${className} w-full rounded-t-2xl shadow-[0px_-2px_4px_#00000033] bg-white space-y-2 p-5 z-2000 absolute bottom-0 left-1/2 -translate-x-1/2 min-w-xs text-black]`}
+      className={`${className} w-full rounded-t-2xl shadow-[0px_-2px_4px_#00000033] bg-white space-y-2 px-6 py-8 pt-7 z-2000 absolute bottom-0 left-1/2 -translate-x-1/2 min-w-xs text-black]`}
       {...rest}
     >
       {onClose && (
