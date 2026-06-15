@@ -5,7 +5,7 @@ import regularBinIcon from "@/assets/regular-icon.svg";
 import type { LatLng } from "@/types/geolocation.type";
 import { secondsToHMS } from "@/utils/time";
 import { metersToKilometers } from "@/utils/geo";
-import Button from "@/components/common/Button";
+import Button from "@/components/common/Button/Button";
 import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
 
 /**
@@ -13,6 +13,7 @@ import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
  */
 const BinInfoCard = ({
   info: { bin, arrivedSeconds },
+  loading,
   isDirectionAvailable = true,
   directionBtnClick,
   onClose,
@@ -21,12 +22,13 @@ const BinInfoCard = ({
     bin: Bin;
     arrivedSeconds?: number;
   };
+  loading?: boolean;
   isDirectionAvailable?: boolean;
   showDirectionBtn?: boolean;
   directionBtnClick?: (latlng: LatLng) => void;
   onClose?: () => void;
 }) => {
-  if (bin && !bin.distanceMeters) return <Skeleton />;
+  if (loading) return <Skeleton />;
 
   const totalDistance =
     bin.distanceMeters >= 1000
@@ -72,7 +74,7 @@ const BinInfoCard = ({
         {directionBtnClick && (
           <Button
             variant={isDirectionAvailable ? "primary" : "disabled"}
-            onClick={() => {
+            onClick={async () => {
               directionBtnClick({ lat: bin.lat, lng: bin.lng });
             }}
           >
