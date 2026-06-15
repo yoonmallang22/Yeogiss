@@ -51,14 +51,14 @@ const RouteMapComponent = ({ start, end, path }: RouteMapProps) => {
       <Polyline
         path={path}
         strokeWeight={10}
-        strokeColor={"#0054AF"}
+        strokeColor={"#9b2bd9"} // --color-purple-500
         strokeOpacity={0.8}
         strokeStyle={"solid"}
       />
       <Polyline
         path={path}
         strokeWeight={8}
-        strokeColor={"#007AFF"}
+        strokeColor={"#a84bd9"} // --color-purple-400
         strokeOpacity={0.8}
         strokeStyle={"solid"}
       />
