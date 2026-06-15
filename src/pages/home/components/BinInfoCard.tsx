@@ -1,11 +1,11 @@
 import type { Bin } from "@/lib/api/bin";
-import walkImage from "@/assets/bx_walk.png";
-import recycleBinIcon from "@/assets/recycle-bin-icon.png";
-import regularBinIcon from "@/assets/regular-bin-icon.png";
+import walkImage from "@/assets/bx_walk.svg";
+import recycleBinIcon from "@/assets/recycle-icon.svg";
+import regularBinIcon from "@/assets/regular-icon.svg";
 import type { LatLng } from "@/types/geolocation.type";
 import { secondsToHMS } from "@/utils/time";
 import { metersToKilometers } from "@/utils/geo";
-import Button from "@/components/common/Button";
+import Button from "@/components/common/Button/Button";
 import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
 
 /**
@@ -13,6 +13,7 @@ import BottomCardWithMeBtnFloat from "@/components/BottomCardWithMeBtnFloat";
  */
 const BinInfoCard = ({
   info: { bin, arrivedSeconds },
+  loading,
   isDirectionAvailable = true,
   directionBtnClick,
   onClose,
@@ -21,12 +22,13 @@ const BinInfoCard = ({
     bin: Bin;
     arrivedSeconds?: number;
   };
+  loading?: boolean;
   isDirectionAvailable?: boolean;
   showDirectionBtn?: boolean;
   directionBtnClick?: (latlng: LatLng) => void;
   onClose?: () => void;
 }) => {
-  if (bin && !bin.distanceMeters) return <Skeleton />;
+  if (loading) return <Skeleton />;
 
   const totalDistance =
     bin.distanceMeters >= 1000
@@ -36,23 +38,23 @@ const BinInfoCard = ({
   return (
     <BottomCardWithMeBtnFloat onClose={onClose}>
       {/* 위치명 */}
-      <p className="font-medium text-base truncate">
+      <p className="font-medium text-base truncate mb-3">
         {bin.detailAddress ? bin.detailAddress : "쓰레기통(정보 없음)"}
       </p>
 
       {/* 설치 위치 */}
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 text-sm ml-2 mb-3">
         {bin.type === "GENERAL" ? (
-          <img className="w-4 h-5" src={regularBinIcon} />
+          <img className="w-[24px] h-[24px]" src={regularBinIcon} />
         ) : (
-          <img className="w-5 h-5" src={recycleBinIcon} />
+          <img className="w-[24px] h-[24px]" src={recycleBinIcon} />
         )}
         <span>{bin.roadAddress}</span>
       </div>
 
       <div className="flex items-center justify-between mt-2">
         <div className="flex items-center gap-2">
-          <img className="w-8 h-8" src={walkImage} />
+          <img src={walkImage} />
           <div>
             {arrivedSeconds &&
               (() => {
@@ -72,7 +74,7 @@ const BinInfoCard = ({
         {directionBtnClick && (
           <Button
             variant={isDirectionAvailable ? "primary" : "disabled"}
-            onClick={() => {
+            onClick={async () => {
               directionBtnClick({ lat: bin.lat, lng: bin.lng });
             }}
           >

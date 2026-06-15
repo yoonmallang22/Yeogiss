@@ -1,6 +1,6 @@
 import type { FallbackProps } from "react-error-boundary";
 import errorImage from "@/assets/error.svg";
-import Button from "@/components/common/Button";
+import Button from "@/components/common/Button/Button";
 import PATH from "@/constants/path";
 
 const FallbackComponent = ({ resetErrorBoundary }: FallbackProps) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { getBinById, getNearbyBins, type Bin } from "@/lib/api/bin";
 import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
@@ -15,6 +15,9 @@ import PATH from "@/constants/path";
 import PrivacyThirdPartyConsentCard from "@/pages/home/components/PrivacyThirdPartyConsentCard";
 import { usePrivacyThirdPartyConsentFlow } from "@/lib/contexts/PrivacyThirdPartyConsentFlowContext";
 import PrivacyThirdPartyPopup from "@/pages/home/components/PrivacyThirdPartyConsentPopup";
+import FilteringButton, {
+  type BinType,
+} from "@/pages/home/components/FilteringButton";
 
 const DIRECTION_MAX_DISTANCE_METERS = 500;
 
@@ -22,6 +25,11 @@ const Home = () => {
   const [loaded, setLoaded] = useState(false); // 최초 쓰레기통의 로드 여부
   const [bins, setBins] = useState<Bin[]>([]); // 쓰레기통 데이터
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null); // 화면에 선택된 쓰레기통 상태
+  const [filteringBinType, setFilteringBinType] = useState<BinType>("all");
+  const filteredBins = useMemo(
+    () => filteringBins(bins, filteringBinType),
+    [bins, filteringBinType],
+  );
   const permission = useGeoPermission();
   const kakaoMap = useContext(KakaoMapContext);
   const navigate = useNavigate();
@@ -97,15 +105,18 @@ const Home = () => {
   };
 
   // 유저가 위치 권한 거부한 경우 렌더링 X
-  if (!userLocation) return null;
+  if (!userLocation) return <FilteringButton />;
 
   return (
     <>
+      {/* 필터링 */}
+      <FilteringButton onChange={setFilteringBinType} />
       {/* 현재 위치에서 쓰레기통 찾기 버튼 */}
       <LoadBinsButton onLoaded={setBins} />
       {/* 쓰레기통 마커 */}
       <BinMarkers
-        bins={bins}
+        bins={filteredBins}
+        id={`${filteringBinType}-${filteredBins.length}`}
         onBinClick={(bin) => {
           trackEvent("TRASH_BIN_MARKER_CLICKED", {
             method: "click",
@@ -136,6 +147,7 @@ const Home = () => {
           info={{
             bin: selectedBin,
           }}
+          loading={selectedBin && !selectedBin.distanceMeters}
           isDirectionAvailable={
             selectedBin.distanceMeters <= DIRECTION_MAX_DISTANCE_METERS
           }
@@ -177,6 +189,26 @@ const Home = () => {
       {isConsentPopupOpen && <PrivacyThirdPartyPopup />}
     </>
   );
+};
+
+/**
+ * 쓰레기통 필터링 기능, 화면 선택 옵션(전체, 일반, 재활용)에 따라서
+ */
+const filteringBins = (bins: Bin[], option: BinType) => {
+  console.log("filtering!!");
+  if (option === "all") {
+    return bins;
+  }
+
+  return bins.filter((bin) => {
+    if (option === "normal" && bin.type === "GENERAL") {
+      return bin;
+    }
+
+    if (option === "recycle" && bin.type === "RECYCLE") {
+      return bin;
+    }
+  });
 };
 
 export default Home;

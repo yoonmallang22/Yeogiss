@@ -1,4 +1,10 @@
-import { useState, useEffect, useContext, type ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { KakaoMapContext } from "react-kakao-maps-sdk";
 import { toast } from "react-toastify";
 import MyMarker from "@/components/userLocationControl/MyMarker";
@@ -8,6 +14,8 @@ import { useLocation } from "react-router-dom";
 import type { LatLng } from "@/types/geolocation.type";
 import useMapTracking from "@/hooks/useMapTracking";
 import PATH from "@/constants/path";
+
+const ME_BUTTON_DEFAULT_BOTTOM = 20;
 
 // 위치권한 있을때만 보여지는 컴포넌트
 const UserLocationControl = ({
@@ -19,9 +27,10 @@ const UserLocationControl = ({
 }) => {
   // home 진입시 자동 추적 on
   const [isFollowing, setIsFollowing] = useState(true);
-  const [isLocationButtonFloat, setLocationButtonFloat] = useState(false);
-  // 하단으로부터 MeButton을 몇 px 띄울지
-  const [float, setFloat] = useState(0);
+  // 화면 하단 기준 MeButton 위치
+  const [meButtonBottom, setMeButtonBottomState] = useState(
+    ME_BUTTON_DEFAULT_BOTTOM,
+  );
   const location = useLocation();
   const kakaoMap = useContext(KakaoMapContext);
 
@@ -50,22 +59,19 @@ const UserLocationControl = ({
   useEffect(() => {
     // 길찾기 화면인 경우
     if (location.pathname === PATH.DIRECTIONS) {
-      setLocationButtonFloat(true); // 항상 버튼이 float
       setIsFollowing(false); // 내 위치 추적 off
     }
-  }, [location, setLocationButtonFloat]);
+  }, [location]);
 
-  // 내 위치 버튼을 띄우는 함수
-  const floatMeButton = (bottom: number) => {
-    setLocationButtonFloat(true);
-    setFloat(bottom);
-  };
+  // 내 위치 버튼의 화면 하단 기준 위치를 변경하는 함수
+  const setMeButtonBottom = useCallback((bottom: number) => {
+    setMeButtonBottomState(bottom);
+  }, []);
 
   // 내 위치 버튼을 원래 위치로 옮기는 함수
-  const unfloatMeButton = () => {
-    setLocationButtonFloat(false);
-    setFloat(0);
-  };
+  const resetMeButtonBottom = useCallback(() => {
+    setMeButtonBottomState(ME_BUTTON_DEFAULT_BOTTOM);
+  }, []);
 
   // 위치권한이 없으면 내 위치 버튼만 렌더링한다.
   if (!userLocation)
@@ -77,10 +83,9 @@ const UserLocationControl = ({
         userLocation,
         isFollowing,
         setIsFollowing,
-        float,
-        isLocationButtonFloat,
-        floatMeButton,
-        unfloatMeButton,
+        meButtonBottom,
+        setMeButtonBottom,
+        resetMeButtonBottom,
       }}
     >
       {userLocation && <MyMarker myLocation={userLocation} />}
