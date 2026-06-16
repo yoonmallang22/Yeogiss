@@ -25,9 +25,9 @@ const BottomCard = ({
       {onClose && (
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100"
+          className="absolute top-6 right-6 p-1 rounded-full bg-gray-100 cursor-pointer hover:bg-gray-200 transition-colors"
         >
-          <X className="w-5 h-5 text-gray-500" />
+          <X className="w-5 h-5 text-gray-800" />
         </button>
       )}
       {children}

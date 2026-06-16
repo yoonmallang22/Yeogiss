@@ -1,14 +1,14 @@
 import { UserLocationControlContext } from "@/components/userLocationControl/UserLocationControl.context";
 import { trackEvent } from "@/lib/trackEvent";
 import { getScreenName } from "@/utils/ga";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 interface MeButtonProps {
   onClick: () => void;
   isFollowing: boolean;
 }
 
-const FollowIcon = ({ color }: { color: string }) => (
+const FollowIcon = ({ color, bgcolor }: { color: string; bgcolor: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={45}
@@ -17,7 +17,7 @@ const FollowIcon = ({ color }: { color: string }) => (
     fill="none"
   >
     <g filter="url(#filter0_dd_590_1462)">
-      <rect x={3.45898} y={3} width={38} height={38} rx={19} fill="white" />
+      <rect x={3.45898} y={3} width={38} height={38} rx={19} fill={bgcolor} />
       <path
         d="M22.459 29C23.3782 29 24.2885 28.8189 25.1378 28.4672C25.987 28.1154 26.7587 27.5998 27.4087 26.9497C28.0587 26.2997 28.5744 25.5281 28.9261 24.6788C29.2779 23.8295 29.459 22.9193 29.459 22M22.459 29C20.6025 29 18.822 28.2625 17.5092 26.9497C16.1965 25.637 15.459 23.8565 15.459 22M22.459 29V31M29.459 22C29.459 21.0807 29.2779 20.1705 28.9261 19.3212C28.5744 18.4719 28.0587 17.7003 27.4087 17.0503C26.7587 16.4002 25.987 15.8846 25.1378 15.5328C24.2885 15.1811 23.3782 15 22.459 15M29.459 22H31.459M22.459 15C20.6025 15 18.822 15.7375 17.5092 17.0503C16.1965 18.363 15.459 20.1435 15.459 22M22.459 15V13M15.459 22H13.459"
         stroke={color}
@@ -92,8 +92,15 @@ const FollowIcon = ({ color }: { color: string }) => (
 );
 
 const MeButton = ({ onClick, isFollowing }: MeButtonProps) => {
-  const strokeColor = isFollowing ? "#00B94E" : "#A5A5A5";
+  const [isActive, setIsActive] = useState(false);
+  const strokeColor = isFollowing
+    ? "#2d0650"
+    : isActive
+      ? "#737373"
+      : "#a5a5a5";
+  const backgroundColor = isActive ? "#bfbfbf" : "#fff";
   const { meButtonBottom } = useContext(UserLocationControlContext);
+
   return (
     <button
       className={`absolute left-2.5 z-[10] cursor-pointer`}
@@ -106,8 +113,14 @@ const MeButton = ({ onClick, isFollowing }: MeButtonProps) => {
           screen_name: getScreenName(location.pathname),
         });
       }}
+      onMouseDown={() => setIsActive(true)}
+      onMouseUp={() => setIsActive(false)}
+      onMouseLeave={() => setIsActive(false)}
+      onTouchStart={() => setIsActive(true)}
+      onTouchEnd={() => setIsActive(false)}
+      onTouchCancel={() => setIsActive(false)}
     >
-      <FollowIcon color={strokeColor} />
+      <FollowIcon color={strokeColor} bgcolor={backgroundColor} />
     </button>
   );
 };

@@ -10,23 +10,23 @@ import {
   MarkerClusterer,
 } from "react-kakao-maps-sdk";
 
-// 마커 이미지, 기존 이미지 사이즈의 1.5배
+// 마커 이미지와 사이즈
 const IMAGE = {
   regular: {
     src: regularMarkerImage,
-    size: { width: 16.5 * 1.5, height: 19.5 * 1.5 },
+    size: { width: 32, height: 34 },
   },
   regularSelected: {
     src: selectedRegularMarkerImage,
-    size: { width: 25 * 1.5, height: 29 * 1.5 },
+    size: { width: 44, height: 53 },
   },
   recycle: {
     src: recycleMarkerImage,
-    size: { width: 25 * 1.5, height: 29 * 1.5 },
+    size: { width: 32, height: 34},
   },
   recycleSelected: {
     src: selectedRecycleMarkerImage,
-    size: { width: 25 * 1.5, height: 29 * 1.5 },
+    size: { width: 44, height: 53 },
   },
 };
 
