@@ -38,7 +38,7 @@ const BinInfoCard = ({
   return (
     <BottomCardWithMeBtnFloat onClose={onClose}>
       {/* 위치명 */}
-      <p className="font-medium text-base truncate mb-3">
+      <p className="font-bold text-base truncate mb-3">
         {bin.detailAddress ? bin.detailAddress : "쓰레기통(정보 없음)"}
       </p>
 
@@ -60,14 +60,14 @@ const BinInfoCard = ({
               (() => {
                 const [hour, minute, seconds] = secondsToHMS(arrivedSeconds);
                 return (
-                  <p className="font-medium">
+                  <p className="font-medium text-sm">
                     {hour ? `${hour}시간 ` : ""}
                     {minute ? `${minute}분 ` : ""}
                     {hour! <= 0 && seconds ? `${seconds}초` : ""} 후 도착
                   </p>
                 );
               })()}
-            <p className="text-xs font-light">총 거리 {totalDistance}</p>
+            <p className="text-sm font-light">총 거리 {totalDistance}</p>
           </div>
         </div>
         {/* 버튼 */}
