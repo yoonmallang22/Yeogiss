@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useCallback } from "react";
 import { getBinById, getNearbyBins, type Bin } from "@/lib/api/bin";
 import LoadBinsButton from "@/pages/home/components/LoadBinsButton";
 import BinMarkers from "@/pages/home/components/BinMarkers";
@@ -24,6 +24,7 @@ const DIRECTION_MAX_DISTANCE_METERS = 500;
 const Home = () => {
   const [loaded, setLoaded] = useState(false); // 최초 쓰레기통의 로드 여부
   const [bins, setBins] = useState<Bin[]>([]); // 쓰레기통 데이터
+  const [binsRevision, setBinsRevision] = useState(0); // 쓰레기통 데이터 교체 횟수
   const [selectedBin, setSelectedBin] = useState<Bin | null>(null); // 화면에 선택된 쓰레기통 상태
   const [filteringBinType, setFilteringBinType] = useState<BinType>("all");
   const filteredBins = useMemo(
@@ -36,6 +37,12 @@ const Home = () => {
   const { setIsFollowing, userLocation } = useContext(
     UserLocationControlContext,
   );
+
+  const replaceBins = useCallback((nextBins: Bin[]) => {
+    setBins(nextBins);
+    setSelectedBin(null);
+    setBinsRevision((prev) => prev + 1);
+  }, []);
 
   // 개인정보 제3자 제공 동의 플로우 관련 컨텍스트, requestDirection의 api가 401로 응답시 isConsentRequired가 true가 된다.
   // completeThirdPartyConsentFlow 호출시 동의 플로우가 완료되고, requestDirection에 전달된 callback 함수를 호출한다.
@@ -71,11 +78,11 @@ const Home = () => {
 
     getNearbyBins(userLocation.lat, userLocation.lng).then((response) => {
       if (response.data.length) {
-        setBins(response.data);
+        replaceBins(response.data);
       }
       setLoaded(true);
     });
-  }, [userLocation, loaded, kakaoMap]);
+  }, [userLocation, loaded, kakaoMap, replaceBins]);
 
   // 선택된 쓰레기통이 길찾기 가능한 거리 내에 없으면 토스트 메시지 처리
   useEffect(() => {
@@ -107,16 +114,19 @@ const Home = () => {
   // 유저가 위치 권한 거부한 경우 렌더링 X
   if (!userLocation) return <FilteringButton />;
 
+  const clusterKey = `${filteringBinType}-${binsRevision}`;
+
   return (
     <>
       {/* 필터링 */}
       <FilteringButton onChange={setFilteringBinType} />
       {/* 현재 위치에서 쓰레기통 찾기 버튼 */}
-      <LoadBinsButton onLoaded={setBins} />
+      <LoadBinsButton onLoaded={replaceBins} />
       {/* 쓰레기통 마커 */}
       <BinMarkers
+        key={clusterKey}
         bins={filteredBins}
-        id={`${filteringBinType}-${filteredBins.length}`}
+        clusterKey={clusterKey}
         onBinClick={(bin) => {
           trackEvent("TRASH_BIN_MARKER_CLICKED", {
             method: "click",
@@ -195,7 +205,6 @@ const Home = () => {
  * 쓰레기통 필터링 기능, 화면 선택 옵션(전체, 일반, 재활용)에 따라서
  */
 const filteringBins = (bins: Bin[], option: BinType) => {
-  console.log("filtering!!");
   if (option === "all") {
     return bins;
   }
